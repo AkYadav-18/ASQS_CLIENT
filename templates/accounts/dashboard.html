@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard - American Skyline Quality Standards{% endblock %}</title>
+    <link rel="icon" type="image/jpeg" href="{% static 'images/company_logo.jpg' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --sidebar-bg: #ffffff;
+            --sidebar-border: #e2e8f0;
+            --sidebar-active-bg: #edf2f7;
+            --sidebar-hover-bg: #f7fafc;
+            --sidebar-text: #4a5568;
+            --sidebar-active-text: #2d3748;
+            --accent: #4a5568;
+            --accent-light: #a0aec0;
+            --main-bg: #f8fafc;
+            --navbar-bg: #fff;
+            --menu-icon-bg: #4a5568;
+            --user-avatar-bg: #4b5563;
+            --content-dashed: #cbd5e0;
+            --content-bg: #f7fafc;
+            --content-title: #4a5568;
+            --content-text: #718096;
+        }
+        /* Dark theme overrides */
+        body.dark-theme {
+            --sidebar-bg: #23272f;
+            --sidebar-border: #232937;
+            --sidebar-active-bg: #323948;
+            --sidebar-hover-bg: #283044;
+            --sidebar-text: #cbd5e1;
+            --sidebar-active-text: #fff;
+            --accent: #b5beda;
+            --accent-light: #868caf;
+            --main-bg: #141821;
+            --navbar-bg: #262c3a;
+            --menu-icon-bg: #3b4252;
+            --user-avatar-bg: #3a4052;
+            --content-dashed: #364055;
+            --content-bg: #1b2130;
+            --content-title: #e0e4ea;
+            --content-text: #b5beda;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--main-bg);
+            height: 100vh;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+            background-color: var(--main-bg);
+        }
+        .sidebar {
+            width: 240px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+            padding: 20px 0;
+            overflow-y: auto;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .sidebar-header {
+            padding: 0 20px 22px;
+            border-bottom: 1px solid var(--sidebar-border);
+        }
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--menu-icon-bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .logo-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: black;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+        .menu-section {
+            margin-bottom: 24px;
+        }
+        .menu-title {
+            padding: 0 20px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .menu-item {
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            gap: 12px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .menu-item:hover {
+            background-color: var(--sidebar-hover-bg);
+            color: var(--sidebar-active-text);
+        }
+        .menu-item.active {
+            background-color: var(--sidebar-active-bg);
+            color: var(--sidebar-active-text);
+            font-weight: 600;
+        }
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background-color: var(--accent);
+        }
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: var(--accent-light);
+        }
+        .main-content {
+            flex: 1;
+            background: var(--navbar-bg);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
+        .top-navbar {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--sidebar-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--navbar-bg);
+            transition: background 0.3s;
+        }
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: var(--content-bg);
+            border-radius: 8px;
+            padding: 8px 16px;
+            gap: 12px;
+            width: 400px;
+            border: 2px solid transparent;
+            transition: background 0.3s, border 0.3s;
+        }
+        .search-input {
+            border: none;
+            background: transparent;
+            outline: none;
+            flex: 1;
+            font-size: 14px;
+            color: var(--sidebar-text);
+        }
+        .search-input::placeholder {
+            color: var(--accent-light);
+        }
+        .search-shortcut {
+            background: var(--sidebar-border);
+            color: var(--accent-light);
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .notification-badge {
+            position: relative;
+        }
+        .notification-badge::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background-color: #dc2626;
+            border-radius: 50%;
+            border: 2px solid var(--navbar-bg);
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+            position: relative;
+            background-color: var(--content-bg);
+        }
+        .user-profile:hover {
+            background-color: var(--content-bg);
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            background-color: var(--user-avatar-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--sidebar-active-text);
+        }
+        .user-role {
+            font-size: 12px;
+            color: var(--accent-light);
+        }
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            max-width: 100%;
+        }
+
+        .content-header {
+            margin-bottom: 24px;
+        }
+
+        .content-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--content-title);
+            margin-bottom: 8px;
+        }
+
+        .content-subtitle {
+            color: var(--content-text);
+            font-size: 1rem;
+        }
+        .content-placeholder {
+            background: var(--content-bg);
+            border: 2px dashed var(--content-dashed);
+            border-radius: 8px;
+            padding: 48px;
+            text-align: center;
+            color: var(--content-text);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .placeholder-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--content-title);
+        }
+        .placeholder-text {
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 600px;
+        }
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 250px;
+                position: fixed;
+                left: -250px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+            .sidebar.mobile-open {
+                left: 0;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .search-container {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <img src="{% static 'images/ASQS_NEW.jpg' %}" alt="Company Logo" class="brand-logo" width="60" height="50" >
+                    </div>
+                    <div class="logo-text">American Skyline Quality Standards</div>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <a href="{% url 'dashboard' %}" class="menu-item">
+                        <div class="menu-icon"><i class="fa-solid fa-chart-area"></i></div>
+                        Dashboard
+                    </a>
+                    <a href="{% url 'partners' %}" class="menu-item">
+                        <div class="menu-icon"><i class="fa-solid fa-handshake"></i></div>
+                        Partners
+                    </a>
+                    <a href="{% url 'clients' %}" class="menu-item">
+                        <div class="menu-icon"><i class="fa-solid fa-users"></i></div>
+                        Add Clients
+                    </a>
+                    <a href="{% url 'enquiries' %}" class="menu-item">
+                        <div class="menu-icon"><i class="fa-solid fa-envelope"></i></div>
+                        Enquiries
+                    </a>
+                    <a href="{% url 'standards' %}" class="menu-item">
+                        <div class="menu-icon"><i class="fa-solid fa-book-open"></i></div>
+                        Standards
+                    </a>
+                    <a href="{% url 'logout' %}" class="menu-item">
+                        <div class="menu-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
+                        Logout
+                    </a>
+
+                </div>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Navbar -->
+            <div class="top-navbar">
+                <div class="search-container">
+                    <div class="menu-icon">⌕</div>
+                    <input type="text" class="search-input" placeholder="Search or type command...">
+                    <span class="search-shortcut">Ctrl+K</span>
+                </div>
+                <div class="navbar-right">
+                    <!-- Theme Switch Icon -->
+                    <!-- <div class="nav-icon notification-badge">🔔</div> -->
+                    <div class="user-profile" id="profileToggle">
+                        <div class="user-avatar">  {{ user.first_name|slice:":1" }}{{ user.last_name|slice:":1" }}</div>
+                        <div class="user-info">
+                            <div class="user-name">{{ user.first_name }}</div>
+                            <div class="user-role">Administrator</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Content Area -->
+            <div class="content-area">
+                <main class="main-contentt">
+                    {% block content %}{% endblock %}
+                </main>      
+            </div>
+        </div>
+    </div>
+    <script>
+        // Sidebar menu item activation
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                // Don't prevent default - allow navigation to work
+                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+
+                // Allow the link to navigate normally
+                // The page will reload, so the active state will be lost anyway
+            });
+        });
+
+        // Search input focus border
+        document.querySelector('.search-input').addEventListener('focus', function() {
+            this.parentElement.style.borderColor = 'var(--accent)';
+        });
+        document.querySelector('.search-input').addEventListener('blur', function() {
+            this.parentElement.style.borderColor = 'transparent';
+        });
+
+    </script>
+</body>
+</html>

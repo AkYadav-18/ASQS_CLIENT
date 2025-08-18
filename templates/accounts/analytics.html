@@ -1,0 +1,1252 @@
+{% extends 'accounts/dashboard.html' %}
+{% load static %}
+
+{% block title %}Analytics - American Skyline Quality Standards{% endblock %}
+
+{% block content %}
+<div class="analytics-container">
+    <div class="analytics-header">
+        <h1 class="analytics-title">Analytics Dashboard</h1>
+        <p class="analytics-subtitle">Comprehensive overview of your certification management system</p>
+    </div>
+
+    <!-- Key Metrics Cards -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-icon clients-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="metric-content">
+                <div class="metric-value">{{ total_clients }}</div>
+                <div class="metric-label">Total Clients</div>
+                <div class="metric-change positive">+{{ recent_clients }} this month</div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon partners-icon">
+                <i class="fas fa-handshake"></i>
+            </div>
+            <div class="metric-content">
+                <div class="metric-value">{{ total_partners }}</div>
+                <div class="metric-label">Total Partners</div>
+                <div class="metric-change positive">+{{ recent_partners }} this month</div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon standards-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <div class="metric-content">
+                <div class="metric-value">{{ total_standards }}</div>
+                <div class="metric-label">Total Standards</div>
+                <div class="metric-change positive">+{{ recent_standards }} this month</div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon expiry-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="metric-content">
+                <div class="metric-value">{{ expiring_soon }}</div>
+                <div class="metric-label">Expiring Soon</div>
+                <div class="metric-change warning">Next 30 days</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weekly Summary -->
+    <div class="summary-section">
+        <div class="summary-header">
+            <h3>This Week's Summary</h3>
+            <p>Activity from the last 7 days</p>
+        </div>
+        
+        <div class="summary-grid">
+            <div class="summary-item">
+                <div class="summary-icon clients-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="summary-content">
+                    <div class="summary-value">{{ weekly_clients }}</div>
+                    <div class="summary-label">New Clients</div>
+                </div>
+            </div>
+            
+            <div class="summary-item">
+                <div class="summary-icon partners-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <div class="summary-content">
+                    <div class="summary-value">{{ weekly_partners }}</div>
+                    <div class="summary-label">New Partners</div>
+                </div>
+            </div>
+            
+            <div class="summary-item">
+                <div class="summary-icon standards-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="summary-content">
+                    <div class="summary-value">{{ weekly_standards }}</div>
+                    <div class="summary-label">New Standards</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-grid">
+        <!-- Monthly Trends Chart -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3>Monthly Trends</h3>
+                <p>Growth over the last 6 months</p>
+            </div>
+            <div class="chart-container">
+                <canvas id="monthlyTrendsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Client Status Distribution -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3>Client Status Distribution</h3>
+                <p>Current certification status breakdown</p>
+            </div>
+            <div class="chart-container">
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Client Analysis Section -->
+    <div class="detailed-analysis-section">
+        <div class="analysis-header">
+            <h3>Detailed Client Analysis</h3>
+            <p>Comprehensive insights into client certification patterns</p>
+        </div>
+
+        <div class="analysis-grid">
+            <!-- Client Growth Analysis -->
+            <div class="analysis-card">
+                <div class="analysis-card-header">
+                    <h4>Client Growth Analysis</h4>
+                    <p>Monthly client acquisition trends</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="clientGrowthChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Certification Status Timeline -->
+            <div class="analysis-card">
+                <div class="analysis-card-header">
+                    <h4>Certification Status Timeline</h4>
+                    <p>Status changes over time</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="statusTimelineChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Geographic Distribution -->
+            <div class="analysis-card">
+                <div class="analysis-card-header">
+                    <h4>Geographic Distribution</h4>
+                    <p>Client distribution by country</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="geographicChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Standards Usage -->
+            <div class="analysis-card">
+                <div class="analysis-card-header">
+                    <h4>Standards Usage</h4>
+                    <p>Most popular certification standards</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="standardsUsageChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Tables Section -->
+    <div class="tables-grid">
+        <!-- Top Countries -->
+        <div class="table-card">
+            <div class="table-header">
+                <h3>Top Countries by Clients</h3>
+                <p>Geographic distribution</p>
+            </div>
+            <div class="table-content">
+                <table class="analytics-table">
+                    <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th>Clients</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for country in top_countries %}
+                        <tr>
+                            <td>{{ country.country|default:"Unknown" }}</td>
+                            <td>{{ country.count }}</td>
+                            <td>{% widthratio country.count total_clients 100 %}%</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="no-data">No data available</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Partner Countries -->
+        <div class="table-card">
+            <div class="table-header">
+                <h3>Partner Distribution</h3>
+                <p>Partners by country</p>
+            </div>
+            <div class="table-content">
+                <table class="analytics-table">
+                    <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th>Partners</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for country in partner_countries %}
+                        <tr>
+                            <td>{{ country.country|default:"Unknown" }}</td>
+                            <td>{{ country.count }}</td>
+                            <td>{% widthratio country.count total_partners 100 %}%</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="no-data">No data available</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Section -->
+    <div class="activity-section">
+        <div class="activity-header">
+            <h3>Recent Activity</h3>
+            <p>Latest additions to the system</p>
+        </div>
+        
+        <div class="activity-grid">
+            <!-- Recent Clients -->
+            <div class="activity-card">
+                <div class="activity-card-header">
+                    <h4><i class="fas fa-users"></i> Recent Clients</h4>
+                </div>
+                <div class="activity-list">
+                    {% for client in recent_clients_list %}
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <div class="activity-name">{{ client.name }}</div>
+                            <div class="activity-meta">{{ client.certification_number }} • {{ client.created_at|date:"M d, Y" }}</div>
+                        </div>
+                        <div class="activity-status status-{{ client.certification_status }}">
+                            {{ client.get_certification_status_display }}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="no-activity">No recent clients</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Recent Partners -->
+            <div class="activity-card">
+                <div class="activity-card-header">
+                    <h4><i class="fas fa-handshake"></i> Recent Partners</h4>
+                </div>
+                <div class="activity-list">
+                    {% for partner in recent_partners_list %}
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <div class="activity-name">{{ partner.partner_name }}</div>
+                            <div class="activity-meta">{{ partner.company_name }} • {{ partner.created_at|date:"M d, Y" }}</div>
+                        </div>
+                        <div class="activity-badge">{{ partner.country }}</div>
+                    </div>
+                    {% empty %}
+                    <div class="no-activity">No recent partners</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Recent Standards -->
+            <div class="activity-card">
+                <div class="activity-card-header">
+                    <h4><i class="fas fa-book-open"></i> Recent Standards</h4>
+                </div>
+                <div class="activity-list">
+                    {% for standard in recent_standards_list %}
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <div class="activity-name">{{ standard.Standard_name }}</div>
+                            <div class="activity-meta">Added {{ standard.created_at|date:"M d, Y" }}</div>
+                        </div>
+                        <div class="activity-badge">Standard</div>
+                    </div>
+                    {% empty %}
+                    <div class="no-activity">No recent standards</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<style>
+/* Analytics Container */
+.analytics-container {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.analytics-header {
+    margin-bottom: 24px;
+}
+
+.analytics-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--content-title);
+    margin: 0 0 6px 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.analytics-subtitle {
+    font-size: 14px;
+    color: var(--content-text);
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.metric-card {
+    background: var(--content-bg);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--sidebar-border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.metric-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+}
+
+.clients-icon {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.partners-icon {
+    background: linear-gradient(135deg, #cd2137 0%, #f5576c 100%);
+}
+
+.standards-icon {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.expiry-icon {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    color: #d97706;
+}
+
+.metric-content {
+    flex: 1;
+}
+
+.metric-value {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--content-title);
+    margin-bottom: 2px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.metric-label {
+    font-size: 14px;
+    color: var(--content-text);
+    margin-bottom: 6px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.metric-change {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.metric-change.positive {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.metric-change.warning {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+/* Charts Grid */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.chart-card {
+    background: var(--content-bg);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--sidebar-border);
+}
+
+.chart-header {
+    margin-bottom: 16px;
+}
+
+.chart-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--content-title);
+    margin: 0 0 4px 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.chart-header p {
+    font-size: 12px;
+    color: var(--content-text);
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.chart-container {
+    position: relative;
+    height: 280px;
+}
+
+/* Detailed Analysis Section */
+.detailed-analysis-section {
+    margin-bottom: 24px;
+}
+
+.analysis-header {
+    margin-bottom: 20px;
+}
+
+.analysis-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--content-title);
+    margin: 0 0 4px 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.analysis-header p {
+    font-size: 14px;
+    color: var(--content-text);
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 16px;
+}
+
+.analysis-card {
+    background: var(--content-bg);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--sidebar-border);
+}
+
+.analysis-card-header {
+    margin-bottom: 16px;
+}
+
+.analysis-card-header h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--content-title);
+    margin: 0 0 4px 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.analysis-card-header p {
+    font-size: 12px;
+    color: var(--content-text);
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Tables Grid */
+.tables-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.table-card {
+    background: var(--content-bg);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--sidebar-border);
+}
+
+.table-header {
+    margin-bottom: 16px;
+}
+
+.table-header h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--content-title);
+    margin: 0 0 4px 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.table-header p {
+    font-size: 12px;
+    color: var(--content-text);
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.analytics-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.analytics-table th {
+    background: var(--sidebar-hover-bg);
+    padding: 10px 8px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--content-title);
+    border-bottom: 1px solid var(--sidebar-border);
+    font-size: 12px;
+}
+
+.analytics-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--sidebar-border);
+    color: var(--content-text);
+}
+
+.analytics-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.no-data {
+    text-align: center;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 20px;
+}
+
+/* Activity Section */
+.activity-section {
+    margin-bottom: 24px;
+}
+
+.activity-header {
+    margin-bottom: 16px;
+}
+
+.activity-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--content-title);
+    margin: 0 0 4px 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.activity-header p {
+    font-size: 14px;
+    color: var(--content-text);
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.activity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.activity-card {
+    background: var(--content-bg);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--sidebar-border);
+}
+
+.activity-card-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.activity-card-header h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--content-title);
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: var(--sidebar-hover-bg);
+    border-radius: 6px;
+    transition: background 0.2s ease;
+}
+
+.activity-item:hover {
+    background: var(--sidebar-active-bg);
+}
+
+.activity-info {
+    flex: 1;
+}
+
+.activity-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--content-title);
+    margin-bottom: 2px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.activity-meta {
+    font-size: 11px;
+    color: var(--content-text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.activity-status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.activity-status.status-active {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.activity-status.status-expired {
+    background: #fecaca;
+    color: #dc2626;
+}
+
+.activity-status.status-suspended {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.activity-status.status-revoked {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.activity-badge {
+    padding: 4px 8px;
+    background: #e2e8f0;
+    color: var(--sidebar-text);
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.no-activity {
+    text-align: center;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 20px;
+    font-size: 0.85rem;
+}
+
+/* Summary Section */
+.summary-section {
+    margin-bottom: 30px;
+}
+
+.summary-header {
+    margin-bottom: 20px;
+}
+
+.summary-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--sidebar-text);
+    margin: 0 0 4px 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.summary-header p {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.summary-item {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.2s ease;
+}
+
+.summary-item:hover {
+    transform: translateY(-2px);
+}
+
+.summary-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: white;
+}
+
+.summary-content {
+    flex: 1;
+}
+
+.summary-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--sidebar-text);
+    margin-bottom: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.summary-label {
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tables-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .analysis-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .analytics-container {
+        padding: 16px;
+    }
+
+    .metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .metric-card {
+        padding: 16px;
+    }
+
+    .chart-card,
+    .table-card,
+    .activity-card,
+    .analysis-card {
+        padding: 16px;
+    }
+
+    .analytics-title {
+        font-size: 20px;
+    }
+
+    .activity-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .analysis-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+}
+</style>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Monthly Trends Chart
+    const monthlyCtx = document.getElementById('monthlyTrendsChart').getContext('2d');
+    const monthlyData = {{ monthly_data|safe }};
+
+    new Chart(monthlyCtx, {
+        type: 'line',
+        data: {
+            labels: monthlyData.map(item => item.month),
+            datasets: [
+                {
+                    label: 'Clients',
+                    data: monthlyData.map(item => item.clients),
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Partners',
+                    data: monthlyData.map(item => item.partners),
+                    borderColor: '#ff0000',
+                    backgroundColor: 'rgba(240, 147, 251, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Standards',
+                    data: monthlyData.map(item => item.standards),
+                    borderColor: '#4facfe',
+                    backgroundColor: 'rgba(79, 172, 254, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 20,
+                        font: {
+                            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                            size: 12
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: '#f1f5f9'
+                    },
+                    ticks: {
+                        font: {
+                            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                            size: 11
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                            size: 11
+                        }
+                    }
+                }
+            },
+            elements: {
+                point: {
+                    radius: 4,
+                    hoverRadius: 6
+                }
+            }
+        }
+    });
+
+    // Client Status Distribution Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    const statusData = {{ client_status_data|safe }};
+
+    const statusColors = {
+        'active': '#10b981',
+        'expired': '#ef4444',
+        'suspended': '#f59e0b',
+        'revoked': '#3b82f6'
+    };
+
+    new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: statusData.map(item => item.certification_status.charAt(0).toUpperCase() + item.certification_status.slice(1)),
+            datasets: [{
+                data: statusData.map(item => item.count),
+                backgroundColor: statusData.map(item => statusColors[item.certification_status] || '#6b7280'),
+                borderWidth: 0,
+                hoverBorderWidth: 2,
+                hoverBorderColor: '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 15,
+                        font: {
+                            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                            size: 12
+                        }
+                    }
+                }
+            },
+            cutout: '60%'
+        }
+    });
+
+    // Client Growth Analysis Chart
+    const clientGrowthCtx = document.getElementById('clientGrowthChart').getContext('2d');
+    new Chart(clientGrowthCtx, {
+        type: 'bar',
+        data: {
+            labels: monthlyData.map(item => item.month),
+            datasets: [{
+                label: 'New Clients',
+                data: monthlyData.map(item => item.clients),
+                backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                borderColor: '#667eea',
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: '#f1f5f9'
+                    },
+                    ticks: {
+                        font: {
+                            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                            size: 11
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                            size: 11
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Status Timeline Chart
+    const statusTimelineCtx = document.getElementById('statusTimelineChart').getContext('2d');
+    const statusTimelineData = {{ status_timeline_data|safe }};
+
+    new Chart(statusTimelineCtx, {
+        type: 'line',
+        data: {
+            labels: statusTimelineData.map(item => item.month),
+            datasets: [
+                {
+                    label: 'Active',
+                    data: statusTimelineData.map(item => item.active),
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Expired',
+                    data: statusTimelineData.map(item => item.expired),
+                    borderColor: '#ef4444',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Suspended',
+                    data: statusTimelineData.map(item => item.suspended),
+                    borderColor: '#f59e0b',
+                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Revoked',
+                    data: statusTimelineData.map(item => item.revoked),
+                    borderColor: '#dc2626',
+                    backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 15,
+                        font: {
+                            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                            size: 11
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: '#f1f5f9'
+                    },
+                    ticks: {
+                        font: {
+                            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                            size: 10
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                            size: 10
+                        }
+                    }
+                }
+            },
+            elements: {
+                point: {
+                    radius: 3,
+                    hoverRadius: 5
+                }
+            }
+        }
+    });
+
+    // Geographic Distribution Chart
+    const geographicCtx = document.getElementById('geographicChart').getContext('2d');
+    new Chart(geographicCtx, {
+        type: 'polarArea',
+        data: {
+            labels: {{ top_countries|safe }}.map(item => item.country || 'Unknown'),
+            datasets: [{
+                data: {{ top_countries|safe }}.map(item => item.count),
+                backgroundColor: [
+                    'rgba(102, 126, 234, 0.8)',    // blue
+                    'rgba(255, 0, 0, 0.8)',        // red (was lavender/pink)
+                    'rgba(79, 172, 254, 0.8)',     // blue
+                    'rgba(16, 185, 129, 0.8)',     // green
+                    'rgba(245, 158, 11, 0.8)'      // amber/orange
+                ],
+
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 10,
+                        font: {
+                            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                            size: 10
+                        }
+                    }
+                }
+            },
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    grid: {
+                        color: '#f1f5f9'
+                    },
+                    ticks: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+
+    // Standards Usage Chart
+    const standardsUsageCtx = document.getElementById('standardsUsageChart').getContext('2d');
+    const standardsData = {{ standards_usage|safe }};
+
+    new Chart(standardsUsageCtx, {
+        type: 'doughnut',
+        data: {
+            labels: standardsData.map(item => item.standard || 'Unknown'),
+            datasets: [{
+                data: standardsData.map(item => item.count),
+                backgroundColor: [
+                    '#667eea',
+                    '#ff0000',
+                    '#4facfe',
+                    '#10b981',
+                    '#f59e0b'
+                ],
+                borderWidth: 0,
+                hoverBorderWidth: 2,
+                hoverBorderColor: '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 10,
+                        font: {
+                            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                            size: 10
+                        }
+                    }
+                }
+            },
+            cutout: '50%'
+        }
+    });
+});
+</script>
+
+{% endblock %}
