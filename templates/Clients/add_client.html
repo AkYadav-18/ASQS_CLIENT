@@ -1,0 +1,1749 @@
+{% extends 'accounts/dashboard.html' %}
+{% load static %}
+
+{% block title %}Add Client - American Skyline Quality Standards{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="content-header">
+        <h1 class="content-title">Client Management</h1>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                    {{ message }}
+                    <button type="button" class="close-alert">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Add Client Form -->
+    <div class="form-container">
+        <div class="form-header">
+            <h2 id="formTitle">Basic Details</h2>
+            <div id="editModeIndicator" class="edit-mode-indicator" style="display: none;">
+                <i class="fas fa-edit"></i> Editing Client
+            </div>
+        </div>
+        
+        <form method="post" class="client-form">
+            {% csrf_token %}
+            <input type="hidden" id="edit_client_id" name="edit_client_id" value="">
+            
+            <!-- Row 1: Name, Address, Certification Number, Country -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter name"
+                           value="{% if form_data %}{{ form_data.name }}{% endif %}" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" placeholder="Address" required
+                           value="{% if form_data %}{{ form_data.address }}{% endif %}">
+                </div>
+
+                <div class="form-group">
+                    <label for="address2">Address 2</label>
+                    <input type="text" id="address2" name="address2" placeholder="Address 2"
+                           value="{% if form_data %}{{ form_data.address2 }}{% endif %}">
+                </div>
+                <div class="form-group">
+                    <label for="address3">Address 3</label>
+                    <input type="text" id="address3" name="address3" placeholder="Address 3"
+                           value="{% if form_data %}{{ form_data.address3 }}{% endif %}">
+                </div>
+                
+            </div>
+
+            <!-- Row 2: Address 2, Address 3, Standard, Certification Date -->
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="certification_number">Certification number</label>
+                    <input type="text" id="certification_number" name="certification_number"
+                           placeholder="Enter certification number" required
+                           value="{% if form_data %}{{ form_data.certification_number }}{% endif %}">
+                </div>
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <select id="country" name="country" required>
+                        <option value="">Select Country</option>
+                        {% for country_code, country_name in countries %}
+                            <option value="{{ country_code }}"
+                                {% if form_data.country == country_code %}selected{% endif %}>
+                                {{ country_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="standard">Standard</label>
+                    <select id="standard" name="standard" required>
+                        <option value="">Select Standard</option>
+                        {% for std in standards %}
+                            <option value="{{ std.Standard_name }}" {% if form_data.standard == std.Standard_name %}selected{% endif %}>
+                                {{ std.Standard_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="certification_date">Certification date</label>
+                    <input type="text" id="certification_date" required name="certification_date"
+                           placeholder="yyyy-mm-dd" pattern="\d{4}-\d{2}-\d{2}"
+                           title="Please enter date in yyyy-mm-dd format"
+                           value="{% if form_data %}{{ form_data.certification_date }}{% endif %}">
+                </div>
+            </div>
+
+            <!-- Row 3: Expiry Date, Recertification Date, Certification Status, Partner -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="expiry_date">Expiry date</label>
+                    <input type="text" id="expiry_date" required name="expiry_date"
+                           placeholder="yyyy-mm-dd" pattern="\d{4}-\d{2}-\d{2}"
+                           title="Please enter date in yyyy-mm-dd format"
+                           value="{% if form_data %}{{ form_data.expiry_date }}{% endif %}">
+                </div>
+                <div class="form-group">
+                    <label for="recertification_date">Recertification date</label>
+                    <input type="text" required id="recertification_date" name="recertification_date"
+                           placeholder="yyyy-mm-dd" pattern="\d{4}-\d{2}-\d{2}"
+                           title="Please enter date in yyyy-mm-dd format"
+                           value="{% if form_data %}{{ form_data.recertification_date }}{% endif %}">
+                </div>
+                <div class="form-group">
+                    <label for="certification_status">Certification status</label>
+                    <select id="certification_status" name="certification_status" required>
+                        <option value="active" {% if form_data.certification_status == 'active' %}selected{% endif %}>Active</option>
+                        <option value="expired" {% if form_data.certification_status == 'expired' %}selected{% endif %}>Expired</option>
+                        <option value="suspended" {% if form_data.certification_status == 'suspended' %}selected{% endif %}>Suspended</option>
+                        <option value="revoked" {% if form_data.certification_status == 'revoked' %}selected{% endif %}>Revoked</option>
+                        <option value="reaccreditation" {% if form_data.certification_status == 'reaccreditation' %}selected{% endif %}>Re-Accreditation</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="partner">Partner</label>
+                    <select id="partner" name="partner" required>
+                        <option value="">Select Partner</option>
+                        {% for partner in partners %}
+                            <option value="{{ partner.id }}" {% if form_data.partner == partner.id|stringformat:"s" %}selected{% endif %}>
+                                {{ partner.partner_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Row 4: Accreditation body, Scope, Issue date, Certification type -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="accreditation_body">Accreditation body</label>
+                    <input type="text" required id="accreditation_body" name="accreditation_body"
+                           placeholder="Accreditation body"
+                           value="{% if form_data %}{{ form_data.accreditation_body }}{% endif %}">
+                </div>
+                <div class="form-group">
+                    <label for="scope">Scope</label>
+                    <input type="text" required id="scope" name="scope" placeholder="Scope"
+                           value="{% if form_data %}{{ form_data.scope }}{% endif %}">
+                </div>
+                <div class="form-group">
+                    <label for="issue_date">Issue date</label>
+                    <input type="text" required id="issue_date" name="issue_date"
+                           placeholder="yyyy-mm-dd" pattern="\d{4}-\d{2}-\d{2}"
+                           title="Please enter date in yyyy-mm-dd format"
+                           value="{% if form_data %}{{ form_data.issue_date }}{% endif %}">
+                </div>
+                <div class="form-group">
+                    <label for="certification_type">Certification type</label>
+                    <select id="certification_type" required name="certification_type">
+                        <option value="">Select Type</option>
+                        <option value="initial" {% if form_data.certification_type == 'initial' %}selected{% endif %}>Initial</option>
+                        <option value="renewal" {% if form_data.certification_type == 'renewal' %}selected{% endif %}>Renewal</option>
+                        <option value="surveillance" {% if form_data.certification_type == 'surveillance' %}selected{% endif %}>Surveillance</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Row 5: Email, Phone (Optional) -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="email">Email </label>
+                    <input type="email" id="email" name="email" placeholder="Enter email"
+                           value="{% if form_data %}{{ form_data.email }}{% endif %}">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone </label>
+                    <input type="text" id="phone" name="phone" placeholder="Enter phone number"
+                           value="{% if form_data %}{{ form_data.phone }}{% endif %}">
+                </div>
+                <div class="form-group">
+                    <!-- Empty for spacing -->
+                </div>
+                <div class="form-group">
+                    <!-- Empty for spacing -->
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <i class="fas fa-plus" id="submitIcon"></i> <span id="submitText">Add Client</span>
+                </button>
+                <button type="reset" class="btn btn-secondary" onclick="resetForm()">
+                    <i class="fas fa-undo"></i> Reset
+                </button>
+                <button type="button" class="btn btn-secondary" id="cancelEditBtn" style="display: none;" onclick="cancelEdit()">
+                    <i class="fas fa-times"></i> Cancel Edit
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Client Listing -->
+    <div class="listing-container">
+        <div class="listing-header">
+            <h2>Client List</h2>
+            <div class="listing-controls">
+                <!-- Search Bar -->
+                <div class="search-containerr" style="width: 205px;">
+                    <input type="text" id="searchInput" placeholder="Search clients..." class="search-input">
+                    <button type="button" id="clearSearch" class="clear-search-btn" style="display: none;" title="Clear search">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Export Button -->
+                <button type="button" class="btn btn-success" style="background-color: #10b981 !important;" onclick="exportToExcel()" title="Export to Excel">
+                    <i class="fas fa-file-excel"></i> Export
+                </button>
+
+                <!-- Filters -->
+                <form method="get" class="filter-form" id="filterForm">
+                    <select name="status_filter" id="statusFilter" class="filter-select">
+                        <option value="">All Status</option>
+                        <option value="active" {% if request.GET.status_filter == 'active' %}selected{% endif %}>Active</option>
+                        <option value="inactive" {% if request.GET.status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
+                        <option value="suspended" {% if request.GET.status_filter == 'suspended' %}selected{% endif %}>Suspended</option>
+                    </select>
+
+                    <select name="country_filter" id="countryFilter" class="filter-select">
+                        <option value="">All Countries</option>
+                        {% for country_code, country_name in countries %}
+                            <option value="{{ country_code }}" {% if request.GET.country_filter == country_code %}selected{% endif %}>{{ country_name }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+
+                <div class="listing-stats">
+                    <span class="stat-item">Total: {{ clients.paginator.count }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-wrapper">
+                <table class="clients-table">
+                <thead>
+                    <tr>
+                        <th data-column="actions">Actions</th>
+                        <th>Name</th>
+                        <th>Certification Number</th>
+                        <th>Country</th>
+                        <th>Standard</th>
+                        <th>Status</th>
+                        <th>Certification Date</th>
+                        <th>Expiry Date</th>
+                        <th>Partner</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client in clients %}
+                    <tr>
+                        <td class="actions">
+                            <button class="btn-action btn-edit" title="Edit" onclick="editClient({{ client.id }})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-action btn-delete" title="Delete" onclick="deleteClient({{ client.id }}, '{{ client.name|escapejs }}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                        <td class="client-name" title="{{ client.name }}">{{ client.name }}</td>
+                        <td class="cert-number" title="{{ client.certification_number|default:'-' }}">{{ client.certification_number }}</td>
+                        <td title="{{ client.country|default:'-' }}">{{ client.get_country_display|default:client.country }}</td>
+                        <td title="{{ client.standard|default:'-' }}">{{ client.standard|default:"-" }}</td>
+                        <td>
+                            <span class="status-badge status-{{ client.certification_status }}">
+                                {{ client.get_certification_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ client.certification_date|date:"M d, Y"|default:"-" }}</td>
+                        <td>{{ client.expiry_date|date:"M d, Y"|default:"-" }}</td>
+                        <td title="{{ client.partner.partner_name|default:'-' }}">{{ client.partner.partner_name|default:"-" }}</td>
+                        <td title="{{ client.email|default:'-' }}">{{ client.email|default:"-" }}</td>
+                        <td title="{{ client.phone|default:'-' }}">{{ client.phone|default:"-" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="11" class="no-data">No clients found. Add your first client using the form above.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            </div>
+
+            <!-- No search results message -->
+            <div id="noSearchResults" class="no-search-results" style="display: none;">
+                <div class="no-results-content">
+                    <i class="fas fa-search"></i>
+                    <h3>No results found</h3>
+                    <p>Try adjusting your search terms or filters</p>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    <span class="pagination-text">
+                        Showing {{ clients.start_index }} to {{ clients.end_index }} of {{ clients.paginator.count }} entries
+                    </span>
+                </div>
+                <div class="pagination-controls">
+                    {% if clients.has_previous %}
+                        <a href="?page=1{% if request.GET.status_filter %}&status_filter={{ request.GET.status_filter }}{% endif %}{% if request.GET.country_filter %}&country_filter={{ request.GET.country_filter }}{% endif %}" class="pagination-btn pagination-btn-first" title="First page">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                        <a href="?page={{ clients.previous_page_number }}{% if request.GET.status_filter %}&status_filter={{ request.GET.status_filter }}{% endif %}{% if request.GET.country_filter %}&country_filter={{ request.GET.country_filter }}{% endif %}" class="pagination-btn pagination-btn-prev" title="Previous page">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    {% else %}
+                        <span class="pagination-btn pagination-btn-disabled">
+                            <i class="fas fa-angle-double-left"></i>
+                        </span>
+                        <span class="pagination-btn pagination-btn-disabled">
+                            <i class="fas fa-angle-left"></i>
+                        </span>
+                    {% endif %}
+
+                    <span class="pagination-current">
+                        Page {{ clients.number }} of {{ clients.paginator.num_pages }}
+                    </span>
+
+                    {% if clients.has_next %}
+                        <a href="?page={{ clients.next_page_number }}{% if request.GET.status_filter %}&status_filter={{ request.GET.status_filter }}{% endif %}{% if request.GET.country_filter %}&country_filter={{ request.GET.country_filter }}{% endif %}" class="pagination-btn pagination-btn-next" title="Next page">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                        <a href="?page={{ clients.paginator.num_pages }}{% if request.GET.status_filter %}&status_filter={{ request.GET.status_filter }}{% endif %}{% if request.GET.country_filter %}&country_filter={{ request.GET.country_filter }}{% endif %}" class="pagination-btn pagination-btn-last" title="Last page">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    {% else %}
+                        <span class="pagination-btn pagination-btn-disabled">
+                            <i class="fas fa-angle-right"></i>
+                        </span>
+                        <span class="pagination-btn pagination-btn-disabled">
+                            <i class="fas fa-angle-double-right"></i>
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirm Delete</h3>
+                <span class="modal-close" onclick="closeDeleteModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <p>Are you sure you want to delete <strong id="clientNameToDelete"></strong>?</p>
+                <p class="modal-warning">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+/* Override content header styles to match dashboard */
+.content-header {
+    margin-bottom: 16px !important;
+}
+
+.content-title {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    color: var(--sidebar-text) !important;
+    margin-bottom: 4px !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+.content-subtitle {
+    color: var(--content-text) !important;
+    font-size: 0.8rem !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Form Styles */
+.form-container {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.form-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form-header h2 {
+    color: var(--sidebar-text);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.edit-mode-indicator {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: var(--sidebar-text);
+    margin-bottom: 4px;
+    font-size: 0.75rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.form-group label .optional {
+    font-weight: 400;
+    color: var(--accent-light);
+    font-size: 0.7rem;
+}
+
+.form-group input,
+.form-group select {
+    padding: 6px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+    background: white;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    height: 32px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.1);
+}
+
+.form-group input::placeholder {
+    color: #9ca3af;
+    font-size: 0.8rem;
+}
+
+.form-group select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 6px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 24px;
+    appearance: none;
+}
+
+/* Date input styling for text inputs with date pattern */
+.form-group input[pattern*="\\d{4}-\\d{2}-\\d{2}"] {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3e%3cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'/%3e%3c/svg%3e");
+    background-position: right 6px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 24px;
+}
+
+/* Only show red border when field has been touched and is invalid */
+.form-group input[pattern*="\\d{4}-\\d{2}-\\d{2}"]:not(:placeholder-shown):invalid {
+    border-color: #ef4444;
+}
+
+/* Also show red border when field has content but doesn't match pattern */
+.form-group input[pattern*="\\d{4}-\\d{2}-\\d{2}"].error {
+    border-color: #ef4444;
+}
+
+.form-group input[pattern*="\\d{4}-\\d{2}-\\d{2}"]:valid {
+    border-color: #10b981;
+}
+
+.form-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    height: 28px;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--sidebar-active-text);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: var(--sidebar-text);
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+/* Messages */
+.messages-container {
+    margin-bottom: 16px;
+}
+
+.alert {
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    font-size: 0.8rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.alert-success {
+    background: #f0fff4;
+    color: #22543d;
+    border: 1px solid #9ae6b4;
+}
+
+.alert-error {
+    background: #fed7d7;
+    color: #742a2a;
+    border: 1px solid #feb2b2;
+}
+
+.close-alert {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.7;
+}
+
+.close-alert:hover {
+    opacity: 1;
+}
+
+/* Listing Styles */
+.listing-container {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.listing-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.listing-header h2 {
+    color: var(--sidebar-text);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.listing-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Search Bar Styles */
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    padding: 6px 32px 6px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    width: 200px;
+    transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    right: 10px;
+    color: #9ca3af;
+    font-size: 0.8rem;
+    pointer-events: none;
+}
+
+.clear-search-btn {
+    position: absolute;
+    right: 30px;
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 2px;
+    font-size: 0.7rem;
+    transition: color 0.2s ease;
+}
+
+.clear-search-btn:hover {
+    color: #ef4444;
+}
+
+/* Filter Styles */
+.filter-form {
+    display: flex;
+    gap: 8px;
+}
+
+.filter-select {
+    padding: 6px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    min-width: 120px;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.listing-stats {
+    display: flex;
+    gap: 8px;
+}
+
+.stat-item {
+    background: var(--sidebar-hover-bg);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    color: var(--sidebar-text);
+    font-size: 0.7rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.table-container {
+    position: relative;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: white;
+}
+
+.clients-table {
+    width: 100%;
+    min-width: 1200px; /* Increased width to ensure horizontal scroll */
+    border-collapse: collapse;
+    font-size: 0.75rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    table-layout: auto; /* Changed to auto for better content fitting */
+}
+
+/* Ensure consistent row heights */
+.clients-table tr {
+    height: 50px;
+}
+
+/* Force all table headers to have consistent alignment - Override any external styles */
+.table-wrapper .clients-table thead tr th {
+    vertical-align: middle !important;
+    text-align: left !important;
+    height: 40px !important;
+    padding: 8px 12px !important;
+    line-height: 1.2 !important;
+    box-sizing: border-box !important;
+    position: static !important;
+    top: auto !important;
+    bottom: auto !important;
+}
+
+/* Override for Actions column specifically - Now first column */
+.table-wrapper .clients-table thead tr th:nth-child(1) {
+    text-align: center !important;
+    transform: none !important;
+    margin: 0 !important;
+    float: none !important;
+    display: table-cell !important;
+}
+
+/* Nuclear option - Force all headers to be exactly the same */
+.clients-table thead th:nth-child(1),
+.clients-table thead th:nth-child(2),
+.clients-table thead th:nth-child(3),
+.clients-table thead th:nth-child(4),
+.clients-table thead th:nth-child(5),
+.clients-table thead th:nth-child(6),
+.clients-table thead th:nth-child(7),
+.clients-table thead th:nth-child(8),
+.clients-table thead th:nth-child(9),
+.clients-table thead th:nth-child(10),
+.clients-table thead th:nth-child(11) {
+    height: 40px !important;
+    vertical-align: middle !important;
+    padding: 8px 12px !important;
+    line-height: 1.2 !important;
+    box-sizing: border-box !important;
+    border: none !important;
+    margin: 0 !important;
+    position: static !important;
+    top: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    display: table-cell !important;
+}
+
+/* Actions column center alignment - Now first column */
+.clients-table thead th:nth-child(1) {
+    text-align: center !important;
+}
+
+/* Final override - Apply after any JS modifications */
+.clients-table thead th[data-column="actions"],
+.clients-table thead th:first-child {
+    text-align: center !important;
+    vertical-align: middle !important;
+    height: 40px !important;
+    padding: 8px 12px !important;
+    line-height: 1.2 !important;
+    box-sizing: border-box !important;
+}
+
+/* Alternative approach - Force table header row alignment */
+.clients-table thead tr {
+    display: table-row !important;
+    height: 40px !important;
+}
+
+.clients-table thead tr th {
+    display: table-cell !important;
+    vertical-align: middle !important;
+    height: 40px !important;
+}
+
+/* Specific column widths to prevent wrapping - Updated for new order */
+.clients-table th:nth-child(1) { min-width: 100px; } /* Actions */
+.clients-table th:nth-child(2) { min-width: 120px; } /* Name */
+.clients-table th:nth-child(3) { min-width: 140px; } /* Certification Number */
+.clients-table th:nth-child(4) { min-width: 80px; }  /* Country */
+.clients-table th:nth-child(5) { min-width: 120px; } /* Standard */
+.clients-table th:nth-child(6) { min-width: 80px; }  /* Status */
+.clients-table th:nth-child(7) { min-width: 120px; } /* Certification Date */
+.clients-table th:nth-child(8) { min-width: 100px; } /* Expiry Date */
+.clients-table th:nth-child(9) { min-width: 150px; } /* Partner */
+.clients-table th:nth-child(10) { min-width: 150px; } /* Email */
+.clients-table th:nth-child(11) { min-width: 100px; } /* Phone */
+
+/* Apply minimum widths to table cells - No max-width for full content visibility */
+.clients-table td:nth-child(1) { min-width: 100px; } /* Actions */
+.clients-table td:nth-child(2) { min-width: 120px; } /* Name */
+.clients-table td:nth-child(3) { min-width: 140px; } /* Certification Number */
+.clients-table td:nth-child(4) { min-width: 80px; }  /* Country */
+.clients-table td:nth-child(5) { min-width: 120px; } /* Standard */
+.clients-table td:nth-child(6) { min-width: 80px; }  /* Status */
+.clients-table td:nth-child(7) { min-width: 120px; } /* Certification Date */
+.clients-table td:nth-child(8) { min-width: 100px; } /* Expiry Date */
+.clients-table td:nth-child(9) { min-width: 150px; } /* Partner */
+.clients-table td:nth-child(10) { min-width: 150px; } /* Email */
+.clients-table td:nth-child(11) { min-width: 100px; } /* Phone */
+
+.clients-table th {
+    background: var(--sidebar-hover-bg) !important;
+    padding: 8px 12px !important;
+    text-align: left;
+    font-weight: 600;
+    color: var(--sidebar-text);
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap !important;
+    font-size: 0.7rem !important;
+    vertical-align: middle !important;
+    height: 40px !important;
+    line-height: 1.2 !important;
+    box-sizing: border-box !important;
+    position: relative;
+}
+
+/* Specific styling for Actions header - Force alignment - Now first column */
+.clients-table thead th:nth-child(1) {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 8px 12px !important;
+    height: 40px !important;
+    line-height: 1.2 !important;
+    box-sizing: border-box !important;
+}
+
+.clients-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    height: 50px;
+    white-space: nowrap; /* Force single line */
+}
+
+.clients-table td.actions {
+    text-align: center;
+    vertical-align: middle;
+    padding: 8px 12px;
+}
+
+/* Ensure Actions column (1st column) cells are centered */
+.clients-table td:nth-child(1) {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.clients-table tbody tr:hover {
+    background: var(--sidebar-hover-bg);
+}
+
+.client-name {
+    font-weight: 500;
+    color: var(--sidebar-active-text);
+}
+
+.cert-number {
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    background: var(--sidebar-hover-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.7rem;
+}
+
+.status-badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.status-active {
+    background: #309c52;
+    color: #ffffff;
+}
+
+.status-expired {
+    background: #cd2626;
+    color: #ffffff;
+}
+
+.status-suspended {
+    background: #d9a035;
+    color: #ffffff;
+}
+
+.status-revoked {
+    background: #2c73ce;
+    color: #ffffff;
+}
+
+.actions {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 50px;
+    width: 100%;
+}
+
+.btn-action {
+    padding: 4px 6px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.7rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 24px;
+    min-width: 24px;
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.btn-edit {
+    background: #bee3f8;
+    color: #2b6cb0;
+}
+
+.btn-edit:hover {
+    background: #90cdf4;
+}
+
+.btn-delete {
+    background: #fed7d7;
+    color: #c53030;
+}
+
+.btn-delete:hover {
+    background: #feb2b2;
+}
+
+.no-data {
+    text-align: center;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 20px 12px;
+    font-size: 0.8rem;
+}
+
+/* No search results styles */
+.no-search-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: #9ca3af;
+}
+
+.no-results-content i {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    color: #d1d5db;
+}
+
+.no-results-content h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.1rem;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.no-results-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #9ca3af;
+}
+
+/* Pagination Styles */
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: #f9fafb;
+    border-top: 1px solid #e2e8f0;
+    border-radius: 0 0 6px 6px;
+}
+
+.pagination-info {
+    color: var(--sidebar-text);
+    font-size: 0.8rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.pagination-btn:hover:not(.pagination-btn-disabled) {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.pagination-btn-disabled {
+    background: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+    border-color: #e5e7eb;
+}
+
+.pagination-current {
+    margin: 0 12px;
+    padding: 6px 12px;
+    background: var(--accent);
+    color: white;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--sidebar-text);
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.modal-close {
+    font-size: 1.5rem;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+    color: var(--sidebar-text);
+}
+
+.modal-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.modal-icon {
+    margin-bottom: 16px;
+}
+
+.modal-icon i {
+    font-size: 3rem;
+    color: #f59e0b;
+}
+
+.modal-body p {
+    margin: 8px 0;
+    color: var(--sidebar-text);
+    font-size: 0.9rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.modal-warning {
+    color: #6b7280 !important;
+    font-size: 0.8rem !important;
+    font-style: italic;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 16px 20px;
+    border-top: 1px solid #e2e8f0;
+    background-color: #f9fafb;
+    border-radius: 0 0 8px 8px;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .form-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .form-container,
+    .listing-container {
+        padding: 12px;
+        margin-bottom: 16px;
+    }
+
+    .listing-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+    }
+
+    .listing-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .filter-form {
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+
+    .filter-select {
+        width: 100%;
+    }
+
+    .clients-table {
+        font-size: 0.7rem;
+    }
+
+    .clients-table th,
+    .clients-table td {
+        padding: 6px 8px;
+    }
+
+    .content-title {
+        font-size: 1.1rem !important;
+    }
+
+    .content-subtitle {
+        font-size: 0.75rem !important;
+    }
+
+    .modal-content {
+        margin: 20% auto;
+        width: 95%;
+    }
+
+    .modal-body {
+        padding: 16px;
+    }
+
+    .modal-footer {
+        padding: 12px 16px;
+    }
+
+    .pagination-container {
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+        text-align: center;
+    }
+
+    .pagination-controls {
+        gap: 2px;
+    }
+
+    .pagination-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.7rem;
+    }
+
+    .pagination-current {
+        margin: 0 8px;
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
+}
+</style>
+
+<script>
+// Close alert messages and date validation
+document.addEventListener('DOMContentLoaded', function() {
+    const closeButtons = document.querySelectorAll('.close-alert');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            this.parentElement.style.display = 'none';
+        });
+    });
+
+    // Auto-hide success messages after 5 seconds
+    const successAlerts = document.querySelectorAll('.alert-success');
+    successAlerts.forEach(alert => {
+        setTimeout(() => {
+            alert.style.opacity = '0';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 300);
+        }, 5000);
+    });
+
+    // Initialize edit mode if URL has edit parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId = urlParams.get('edit');
+    if (editId) {
+        // This will be handled by server-side logic
+    }
+
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const clearSearchBtn = document.getElementById('clearSearch');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            filterTable();
+            // Show/hide clear button
+            if (this.value.trim()) {
+                clearSearchBtn.style.display = 'block';
+            } else {
+                clearSearchBtn.style.display = 'none';
+            }
+        });
+    }
+
+    if (clearSearchBtn) {
+        clearSearchBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            this.style.display = 'none';
+            filterTable();
+        });
+    }
+
+    // Filter functionality
+    const statusFilter = document.getElementById('statusFilter');
+    const countryFilter = document.getElementById('countryFilter');
+
+    if (statusFilter) {
+        statusFilter.addEventListener('change', function() {
+            document.getElementById('filterForm').submit();
+        });
+    }
+
+    if (countryFilter) {
+        countryFilter.addEventListener('change', function() {
+            document.getElementById('filterForm').submit();
+        });
+    }
+
+    // Date validation for yyyy-mm-dd format
+    const dateInputs = document.querySelectorAll('input[pattern*="\\\\d{4}-\\\\d{2}-\\\\d{2}"]');
+    dateInputs.forEach(input => {
+        // Mark field as touched when user starts typing
+        input.addEventListener('input', function() {
+            this.setAttribute('data-touched', 'true');
+            validateDateInput(this);
+        });
+
+        input.addEventListener('blur', function() {
+            this.setAttribute('data-touched', 'true');
+            validateDateInput(this);
+        });
+
+        // Initialize with default border
+        input.style.borderColor = '#d1d5db';
+    });
+
+    function validateDateInput(input) {
+        const value = input.value.trim();
+        const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+        const isTouched = input.getAttribute('data-touched') === 'true';
+
+        // Reset to default border if empty
+        if (value === '') {
+            input.style.borderColor = '#d1d5db';
+            input.setCustomValidity('');
+            input.classList.remove('error');
+            return;
+        }
+
+        // Only show validation errors if field has been touched
+        if (!isTouched) {
+            return;
+        }
+
+        // Only validate if user has entered something
+        if (!datePattern.test(value)) {
+            input.style.borderColor = '#ef4444';
+            input.classList.add('error');
+            input.setCustomValidity('Please enter date in yyyy-mm-dd format');
+            return;
+        }
+
+        // Validate if it's a real date
+        const [year, month, day] = value.split('-').map(num => parseInt(num, 10));
+        const date = new Date(year, month - 1, day);
+
+        if (date.getFullYear() !== year ||
+            date.getMonth() !== month - 1 ||
+            date.getDate() !== day ||
+            year < 1900 || year > 2100 ||
+            month < 1 || month > 12 ||
+            day < 1 || day > 31) {
+            input.style.borderColor = '#ef4444';
+            input.classList.add('error');
+            input.setCustomValidity('Please enter a valid date');
+        } else {
+            // Valid date - show green border briefly then return to normal
+            input.style.borderColor = '#10b981';
+            input.classList.remove('error');
+            input.setCustomValidity('');
+
+            // Return to normal border after 1 second
+            setTimeout(() => {
+                if (input.style.borderColor === 'rgb(16, 185, 129)') { // #10b981 in rgb
+                    input.style.borderColor = '#d1d5db';
+                }
+            }, 1000);
+        }
+    }
+
+    // Format date input as user types
+    dateInputs.forEach(input => {
+        input.addEventListener('keypress', function(e) {
+            const value = this.value;
+            const char = String.fromCharCode(e.which);
+
+            // Allow only numbers and hyphens
+            if (!/[\d-]/.test(char) && !e.ctrlKey && !e.metaKey) {
+                e.preventDefault();
+                return;
+            }
+
+            // Auto-add hyphens
+            if (/\d/.test(char)) {
+                if (value.length === 4 || value.length === 7) {
+                    this.value += '-';
+                }
+            }
+        });
+
+        input.addEventListener('paste', function(e) {
+            setTimeout(() => {
+                validateDateInput(this);
+            }, 10);
+        });
+    });
+});
+
+// Search filter function
+function filterTable() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const tableRows = document.querySelectorAll('.clients-table tbody tr');
+    const noResultsDiv = document.getElementById('noSearchResults');
+    const table = document.querySelector('.clients-table');
+    let visibleCount = 0;
+
+    // Skip empty row if it exists
+    const dataRows = Array.from(tableRows).filter(row => !row.querySelector('.no-data'));
+
+    dataRows.forEach(row => {
+        const name = row.cells[0].textContent.toLowerCase();
+        const certNumber = row.cells[1].textContent.toLowerCase();
+        const country = row.cells[2].textContent.toLowerCase();
+        const standard = row.cells[3].textContent.toLowerCase();
+        const partner = row.cells[7].textContent.toLowerCase();
+
+        const isVisible = name.includes(searchTerm) ||
+                         certNumber.includes(searchTerm) ||
+                         country.includes(searchTerm) ||
+                         standard.includes(searchTerm) ||
+                         partner.includes(searchTerm);
+
+        if (isVisible) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    // Show/hide no results message
+    if (searchTerm && visibleCount === 0 && dataRows.length > 0) {
+        table.style.display = 'none';
+        noResultsDiv.style.display = 'block';
+    } else {
+        table.style.display = 'table';
+        noResultsDiv.style.display = 'none';
+    }
+
+    // Update total count
+    const totalElement = document.querySelector('.stat-item');
+    if (totalElement) {
+        const originalTotal = dataRows.length;
+        if (searchTerm) {
+            totalElement.textContent = `Showing: ${visibleCount} of ${originalTotal}`;
+        } else {
+            // Keep original total from backend pagination
+            const originalText = totalElement.textContent;
+            if (!originalText.includes('Total:')) {
+                totalElement.textContent = `Total: ${originalTotal}`;
+            }
+        }
+    }
+
+    // Hide pagination when searching
+    const paginationContainer = document.querySelector('.pagination-container');
+    if (paginationContainer) {
+        if (searchTerm) {
+            paginationContainer.style.display = 'none';
+        } else {
+            paginationContainer.style.display = 'flex';
+        }
+    }
+}
+
+// Edit Client Function
+function editClient(clientId) {
+    // Fetch client data and populate form
+    fetch(`/clients/get/${clientId}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                populateForm(data.client);
+                enterEditMode(clientId);
+            } else {
+                alert('Error loading client data: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error loading client data');
+        });
+}
+
+// Populate form with client data
+function populateForm(client) {
+    document.getElementById('name').value = client.name || '';
+    document.getElementById('email').value = client.email || '';
+    document.getElementById('phone').value = client.phone || '';
+    document.getElementById('address').value = client.address || '';
+    document.getElementById('address2').value = client.address2 || '';
+    document.getElementById('address3').value = client.address3 || '';
+    document.getElementById('certification_number').value = client.certification_number || '';
+    document.getElementById('country').value = client.country || '';
+    document.getElementById('standard').value = client.standard || '';
+    document.getElementById('certification_date').value = client.certification_date || '';
+    document.getElementById('expiry_date').value = client.expiry_date || '';
+    document.getElementById('recertification_date').value = client.recertification_date || '';
+    document.getElementById('accreditation_body').value = client.accreditation_body || '';
+    document.getElementById('scope').value = client.scope || '';
+    document.getElementById('certification_status').value = client.certification_status || 'active';
+    document.getElementById('partner').value = client.partner_id || '';
+    document.getElementById('issue_date').value = client.issue_date || '';
+    document.getElementById('certification_type').value = client.certification_type || '';
+}
+
+// Enter edit mode
+function enterEditMode(clientId) {
+    document.getElementById('edit_client_id').value = clientId;
+    document.getElementById('formTitle').textContent = 'Edit Client';
+    document.getElementById('editModeIndicator').style.display = 'flex';
+    document.getElementById('submitIcon').className = 'fas fa-save';
+    document.getElementById('submitText').textContent = 'Update Client';
+    document.getElementById('cancelEditBtn').style.display = 'inline-flex';
+
+    // Scroll to form
+    document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Cancel edit mode
+function cancelEdit() {
+    document.getElementById('edit_client_id').value = '';
+    document.getElementById('formTitle').textContent = 'Basic Details';
+    document.getElementById('editModeIndicator').style.display = 'none';
+    document.getElementById('submitIcon').className = 'fas fa-plus';
+    document.getElementById('submitText').textContent = 'Add Client';
+    document.getElementById('cancelEditBtn').style.display = 'none';
+    resetForm();
+}
+
+// Reset form
+function resetForm() {
+    document.querySelector('.client-form').reset();
+    // Reset any validation styling
+    const inputs = document.querySelectorAll('input[pattern*="\\\\d{4}-\\\\d{2}-\\\\d{2}"]');
+    inputs.forEach(input => {
+        input.style.borderColor = '#d1d5db';
+        input.classList.remove('error');
+        input.setCustomValidity('');
+        input.removeAttribute('data-touched');
+    });
+}
+
+// Delete Client Function
+function deleteClient(clientId, clientName) {
+    document.getElementById('clientNameToDelete').textContent = clientName;
+    document.getElementById('deleteModal').style.display = 'block';
+
+    // Set up confirm delete button
+    document.getElementById('confirmDeleteBtn').onclick = function() {
+        performDelete(clientId);
+    };
+}
+
+// Perform actual delete
+function performDelete(clientId) {
+    fetch(`/clients/delete/${clientId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            closeDeleteModal();
+            // Show success message before reload
+            showSuccessMessage(data.message);
+            // Delay reload to show message
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            closeDeleteModal();
+            alert('Error deleting client: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        closeDeleteModal();
+        alert('Error deleting client');
+    });
+}
+
+// Show success message function
+function showSuccessMessage(message) {
+    // Create success message element
+    const successDiv = document.createElement('div');
+    successDiv.className = 'alert alert-success';
+    successDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #10b981;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 1001;
+        font-size: 0.9rem;
+        font-weight: 500;
+        animation: slideInRight 0.3s ease-out;
+    `;
+    successDiv.innerHTML = `<i class="fas fa-check-circle" style="margin-right: 8px;"></i>${message}`;
+
+    // Add animation keyframes if not already added
+    if (!document.getElementById('successAnimationStyle')) {
+        const style = document.createElement('style');
+        style.id = 'successAnimationStyle';
+        style.textContent = `
+            @keyframes slideInRight {
+                from {
+                    opacity: 0;
+                    transform: translateX(100px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    document.body.appendChild(successDiv);
+
+    // Remove message after 3 seconds
+    setTimeout(() => {
+        if (successDiv.parentNode) {
+            successDiv.remove();
+        }
+    }, 3000);
+}
+
+// Close delete modal
+function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('deleteModal');
+    if (event.target === modal) {
+        closeDeleteModal();
+    }
+}
+
+// Export to Excel function
+function exportToExcel() {
+    // Get current filter values
+    const statusFilter = document.getElementById('statusFilter').value;
+    const countryFilter = document.getElementById('countryFilter').value;
+
+    // Build URL with filters
+    let exportUrl = '/clients/export/';
+    const params = new URLSearchParams();
+
+    if (statusFilter) {
+        params.append('status_filter', statusFilter);
+    }
+    if (countryFilter) {
+        params.append('country_filter', countryFilter);
+    }
+
+    if (params.toString()) {
+        exportUrl += '?' + params.toString();
+    }
+
+    // Trigger download
+    window.location.href = exportUrl;
+}
+</script>
+{% endblock %}

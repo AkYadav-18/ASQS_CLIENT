@@ -1,0 +1,1304 @@
+{% extends 'accounts/dashboard.html' %}
+{% load static %}
+
+{% block title %}Add Partner - American Skyline Quality Standards{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="content-header">
+        <h1 class="content-title">Partner Management</h1>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                    {{ message }}
+                    <button type="button" class="close-alert">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Add Partner Form -->
+    <div class="form-container">
+        <div class="form-header">
+            <h2 id="formTitle">Partner Details</h2>
+            <div id="editModeIndicator" class="edit-mode-indicator" style="display: none;">
+                <i class="fas fa-edit"></i> Editing Partner
+            </div>
+        </div>
+        
+        <form method="post" class="partner-form">
+            {% csrf_token %}
+            <input type="hidden" id="edit_partner_id" name="edit_partner_id" value="">
+            
+            <!-- Row 1: Partner Name, Company Name -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="partner_name">Partner Name</label>
+                    <input type="text" id="partner_name" name="partner_name" placeholder="Enter partner name" 
+                           value="{% if form_data %}{{ form_data.partner_name }}{% endif %}" required>
+                </div>
+                <div class="form-group">
+                    <label for="company_name">Company Name</label>
+                    <input type="text" id="company_name" name="company_name" placeholder="Enter company name" required
+                           value="{% if form_data %}{{ form_data.company_name }}{% endif %}">
+                </div>
+                <div class="form-group">
+                    <label for="person_name">Contact Person</label>
+                    <input type="text" id="person_name" name="person_name" placeholder="Contact person name" 
+                           value="{% if form_data %}{{ form_data.person_name }}{% endif %}">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter email address" required
+                           value="{% if form_data %}{{ form_data.email }}{% endif %}">
+                </div>
+            </div>
+
+            <!-- Row 2: Phone, Country, Address -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="text" id="phone" name="phone" placeholder="Enter phone number"
+                           value="{% if form_data %}{{ form_data.phone }}{% endif %}">
+                </div>
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <select id="country" name="country" required>
+                        {% for code, name in countries %}
+                            <option value="{{ code }}" {% if form_data.country == code %}selected{% endif %}>{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group form-group-wide">
+                    <label for="address">Address</label>
+                    <textarea id="address" name="address" placeholder="Enter full address" rows="2">{% if form_data %}{{ form_data.address }}{% endif %}</textarea>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <i class="fas fa-plus" id="submitIcon"></i> <span id="submitText">Add Partner</span>
+                </button>
+                <button type="reset" class="btn btn-secondary" onclick="resetForm()">
+                    <i class="fas fa-undo"></i> Reset
+                </button>
+                <button type="button" class="btn btn-secondary" id="cancelEditBtn" style="display: none;" onclick="cancelEdit()">
+                    <i class="fas fa-times"></i> Cancel Edit
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Partner Listing -->
+    <div class="listing-container">
+        <div class="listing-header">
+            <h2>Partner List</h2>
+            <div class="listing-controls">
+                <!-- Search Bar -->
+                <div class="search-containerr" style="width: 205px;">
+                    <input type="text" id="searchInput" placeholder="Search partners..." class="search-input">
+                    <button type="button" id="clearSearch" class="clear-search-btn" style="display: none;" title="Clear search">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Export Button -->
+                <button type="button" class="btn btn-success" style="background-color: #10b981 !important;" onclick="exportPartnersToExcel()" title="Export to Excel">
+                    <i class="fas fa-file-excel"></i> Export
+                </button>
+
+                <!-- Filters -->
+                <form method="get" class="filter-form" id="filterForm">
+                    <select name="country_filter" id="countryFilter" class="filter-select">
+                        <option value="">All Countries</option>
+                        {% for country_code, country_name in countries %}
+                            <option value="{{ country_code }}" {% if request.GET.country_filter == country_code %}selected{% endif %}>{{ country_name }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+
+                <div class="listing-stats">
+                    <span class="stat-item">Total: {{ partners.paginator.count }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-wrapper">
+                <table class="partners-table">
+                <thead>
+                    <tr>
+                        <th>Partner Name</th>
+                        <th>Company Name</th>
+                        <th>Contact Person</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Country</th>
+                        <th>Address</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for partner in partners %}
+                    <tr>
+                        <td class="partner-name" title="{{ partner.partner_name }}">{{ partner.partner_name }}</td>
+                        <td title="{{ partner.company_name }}">{{ partner.company_name }}</td>
+                        <td title="{{ partner.person_name|default:'-' }}">{{ partner.person_name|default:"-" }}</td>
+                        <td title="{{ partner.email }}">{{ partner.email }}</td>
+                        <td title="{{ partner.phone|default:'-' }}">{{ partner.phone|default:"-" }}</td>
+                        <td title="{{ partner.get_country_display|default:partner.country }}">{{ partner.get_country_display|default:partner.country }}</td>
+                        <td title="{{ partner.address|default:'-' }}">{{ partner.address|default:"-" }}</td>
+                        <td class="actions">
+                            <button class="btn-action btn-edit" title="Edit" onclick="editPartner({{ partner.id }})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-action btn-delete" title="Delete" onclick="deletePartner({{ partner.id }}, '{{ partner.partner_name|escapejs }}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="no-data">No partners found. Add your first partner using the form above.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            </div>
+
+            <!-- No search results message -->
+            <div id="noSearchResults" class="no-search-results" style="display: none;">
+                <div class="no-results-content">
+                    <i class="fas fa-search"></i>
+                    <h3>No results found</h3>
+                    <p>Try adjusting your search terms or filters</p>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    <span class="pagination-text">
+                        Showing {{ partners.start_index }} to {{ partners.end_index }} of {{ partners.paginator.count }} entries
+                    </span>
+                </div>
+                <div class="pagination-controls">
+                    {% if partners.has_previous %}
+                        <a href="?page=1{% if request.GET.country_filter %}&country_filter={{ request.GET.country_filter }}{% endif %}" class="pagination-btn pagination-btn-first" title="First page">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                        <a href="?page={{ partners.previous_page_number }}{% if request.GET.country_filter %}&country_filter={{ request.GET.country_filter }}{% endif %}" class="pagination-btn pagination-btn-prev" title="Previous page">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    {% else %}
+                        <span class="pagination-btn pagination-btn-disabled">
+                            <i class="fas fa-angle-double-left"></i>
+                        </span>
+                        <span class="pagination-btn pagination-btn-disabled">
+                            <i class="fas fa-angle-left"></i>
+                        </span>
+                    {% endif %}
+
+                    <span class="pagination-current">
+                        Page {{ partners.number }} of {{ partners.paginator.num_pages }}
+                    </span>
+
+                    {% if partners.has_next %}
+                        <a href="?page={{ partners.next_page_number }}{% if request.GET.country_filter %}&country_filter={{ request.GET.country_filter }}{% endif %}" class="pagination-btn pagination-btn-next" title="Next page">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                        <a href="?page={{ partners.paginator.num_pages }}{% if request.GET.country_filter %}&country_filter={{ request.GET.country_filter }}{% endif %}" class="pagination-btn pagination-btn-last" title="Last page">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    {% else %}
+                        <span class="pagination-btn pagination-btn-disabled">
+                            <i class="fas fa-angle-right"></i>
+                        </span>
+                        <span class="pagination-btn pagination-btn-disabled">
+                            <i class="fas fa-angle-double-right"></i>
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirm Delete</h3>
+                <span class="modal-close" onclick="closeDeleteModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <p>Are you sure you want to delete <strong id="partnerNameToDelete"></strong>?</p>
+                <p class="modal-warning">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+/* Override content header styles to match dashboard */
+.content-header {
+    margin-bottom: 16px !important;
+}
+
+.content-title {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    color: var(--sidebar-text) !important;
+    margin-bottom: 4px !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Form Styles */
+.form-container {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.form-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form-header h2 {
+    color: var(--sidebar-text);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.edit-mode-indicator {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group-wide {
+    grid-column: span 2;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: var(--sidebar-text);
+    margin-bottom: 4px;
+    font-size: 0.75rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 6px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+    background: white;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    height: 32px;
+}
+
+.form-group textarea {
+    height: auto;
+    resize: vertical;
+    min-height: 60px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.1);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #9ca3af;
+    font-size: 0.8rem;
+}
+
+.form-group select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 6px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 24px;
+    appearance: none;
+}
+
+.form-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    height: 28px;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--sidebar-active-text);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: var(--sidebar-text);
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+/* Messages */
+.messages-container {
+    margin-bottom: 16px;
+}
+
+.alert {
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    font-size: 0.8rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.alert-success {
+    background: #f0fff4;
+    color: #22543d;
+    border: 1px solid #9ae6b4;
+}
+
+.alert-error {
+    background: #fed7d7;
+    color: #742a2a;
+    border: 1px solid #feb2b2;
+}
+
+.close-alert {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.7;
+}
+
+.close-alert:hover {
+    opacity: 1;
+}
+
+/* Listing Styles */
+.listing-container {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.listing-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.listing-header h2 {
+    color: var(--sidebar-text);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.listing-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Search Bar Styles */
+.search-input {
+    padding: 6px 32px 6px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    width: 200px;
+    transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.clear-search-btn {
+    position: absolute;
+    right: 30px;
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 2px;
+    font-size: 0.7rem;
+    transition: color 0.2s ease;
+}
+
+.clear-search-btn:hover {
+    color: #ef4444;
+}
+
+/* Filter Styles */
+.filter-form {
+    display: flex;
+    gap: 8px;
+}
+
+.filter-select {
+    padding: 6px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    min-width: 120px;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.listing-stats {
+    display: flex;
+    gap: 8px;
+}
+
+.stat-item {
+    background: var(--sidebar-hover-bg);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    color: var(--sidebar-text);
+    font-size: 0.7rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.table-container {
+    position: relative;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: white;
+}
+
+.partners-table {
+    width: 100%;
+    min-width: 1000px; /* Increased for better column spacing */
+    border-collapse: collapse;
+    font-size: 0.75rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    table-layout: auto; /* Allow columns to size based on content */
+}
+
+.partners-table th {
+    background: var(--sidebar-hover-bg) !important;
+    padding: 8px 12px !important;
+    text-align: left;
+    font-weight: 600;
+    color: var(--sidebar-text);
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap !important;
+    font-size: 0.7rem !important;
+    vertical-align: middle !important;
+    height: 40px !important;
+    line-height: 1.2 !important;
+    box-sizing: border-box !important;
+    position: relative;
+}
+
+.partners-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    height: 50px;
+    white-space: nowrap; /* Force single line */
+}
+
+.partners-table td.actions {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.partners-table tbody tr:hover {
+    background: var(--sidebar-hover-bg);
+}
+
+.partner-name {
+    font-weight: 500;
+    color: var(--sidebar-active-text);
+}
+
+/* Specific column widths for better spacing */
+.partners-table th:nth-child(1) { min-width: 150px; } /* Partner Name */
+.partners-table th:nth-child(2) { min-width: 150px; } /* Company Name */
+.partners-table th:nth-child(3) { min-width: 120px; } /* Contact Person */
+.partners-table th:nth-child(4) { min-width: 150px; } /* Email */
+.partners-table th:nth-child(5) { min-width: 100px; } /* Phone */
+.partners-table th:nth-child(6) { min-width: 80px; }  /* Country */
+.partners-table th:nth-child(7) { min-width: 200px; } /* Address */
+.partners-table th:nth-child(8) { min-width: 100px; } /* Actions */
+
+/* Apply minimum widths to table cells - No max-width for full content visibility */
+.partners-table td:nth-child(1) { min-width: 150px; } /* Partner Name */
+.partners-table td:nth-child(2) { min-width: 150px; } /* Company Name */
+.partners-table td:nth-child(3) { min-width: 120px; } /* Contact Person */
+.partners-table td:nth-child(4) { min-width: 150px; } /* Email */
+.partners-table td:nth-child(5) { min-width: 100px; } /* Phone */
+.partners-table td:nth-child(6) { min-width: 80px; }  /* Country */
+.partners-table td:nth-child(7) { min-width: 200px; } /* Address */
+.partners-table td:nth-child(8) { min-width: 100px; } /* Actions */
+
+.actions {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.btn-action {
+    padding: 4px 6px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.7rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 24px;
+    min-width: 24px;
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.btn-edit {
+    background: #bee3f8;
+    color: #2b6cb0;
+}
+
+.btn-edit:hover {
+    background: #90cdf4;
+}
+
+.btn-delete {
+    background: #fed7d7;
+    color: #c53030;
+}
+
+.btn-delete:hover {
+    background: #feb2b2;
+}
+
+.no-data {
+    text-align: center;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 20px 12px;
+    font-size: 0.8rem;
+}
+
+/* No search results styles */
+.no-search-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: #9ca3af;
+}
+
+.no-results-content i {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    color: #d1d5db;
+}
+
+.no-results-content h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.1rem;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.no-results-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #9ca3af;
+}
+
+/* Pagination Styles */
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: #f9fafb;
+    border-top: 1px solid #e2e8f0;
+    border-radius: 0 0 6px 6px;
+}
+
+.pagination-info {
+    color: var(--sidebar-text);
+    font-size: 0.8rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.pagination-btn:hover:not(.pagination-btn-disabled) {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.pagination-btn-disabled {
+    background: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+    border-color: #e5e7eb;
+}
+
+.pagination-current {
+    margin: 0 12px;
+    padding: 6px 12px;
+    background: var(--accent);
+    color: white;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--sidebar-text);
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.modal-close {
+    font-size: 1.5rem;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+    color: var(--sidebar-text);
+}
+
+.modal-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.modal-icon {
+    margin-bottom: 16px;
+}
+
+.modal-icon i {
+    font-size: 3rem;
+    color: #f59e0b;
+}
+
+.modal-body p {
+    margin: 8px 0;
+    color: var(--sidebar-text);
+    font-size: 0.9rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.modal-warning {
+    color: #6b7280 !important;
+    font-size: 0.8rem !important;
+    font-style: italic;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 16px 20px;
+    border-top: 1px solid #e2e8f0;
+    background-color: #f9fafb;
+    border-radius: 0 0 8px 8px;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .form-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .form-group-wide {
+        grid-column: span 1;
+    }
+
+    .form-container,
+    .listing-container {
+        padding: 12px;
+        margin-bottom: 16px;
+    }
+
+    .listing-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+    }
+
+    .listing-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .filter-form {
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+
+    .filter-select {
+        width: 100%;
+    }
+
+    .partners-table {
+        font-size: 0.7rem;
+    }
+
+    .partners-table th,
+    .partners-table td {
+        padding: 6px 8px;
+    }
+
+    .content-title {
+        font-size: 1.1rem !important;
+    }
+
+    .modal-content {
+        margin: 20% auto;
+        width: 95%;
+    }
+
+    .modal-body {
+        padding: 16px;
+    }
+
+    .modal-footer {
+        padding: 12px 16px;
+    }
+
+    .pagination-container {
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+        text-align: center;
+    }
+
+    .pagination-controls {
+        gap: 2px;
+    }
+
+    .pagination-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.7rem;
+    }
+
+    .pagination-current {
+        margin: 0 8px;
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
+}
+</style>
+
+<script>
+// Close alert messages
+document.addEventListener('DOMContentLoaded', function() {
+    const closeButtons = document.querySelectorAll('.close-alert');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            this.parentElement.style.display = 'none';
+        });
+    });
+
+    // Auto-hide success messages after 5 seconds
+    const successAlerts = document.querySelectorAll('.alert-success');
+    successAlerts.forEach(alert => {
+        setTimeout(() => {
+            alert.style.opacity = '0';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 300);
+        }, 5000);
+    });
+
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const clearSearchBtn = document.getElementById('clearSearch');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            filterTable();
+            // Show/hide clear button
+            if (this.value.trim()) {
+                clearSearchBtn.style.display = 'block';
+            } else {
+                clearSearchBtn.style.display = 'none';
+            }
+        });
+    }
+
+    if (clearSearchBtn) {
+        clearSearchBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            this.style.display = 'none';
+            filterTable();
+        });
+    }
+
+    // Filter functionality
+    const countryFilter = document.getElementById('countryFilter');
+
+    if (countryFilter) {
+        countryFilter.addEventListener('change', function() {
+            document.getElementById('filterForm').submit();
+        });
+    }
+});
+
+// Search filter function
+function filterTable() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const tableRows = document.querySelectorAll('.partners-table tbody tr');
+    const noResultsDiv = document.getElementById('noSearchResults');
+    const table = document.querySelector('.partners-table');
+    let visibleCount = 0;
+
+    // Skip empty row if it exists
+    const dataRows = Array.from(tableRows).filter(row => !row.querySelector('.no-data'));
+
+    dataRows.forEach(row => {
+        const partnerName = row.cells[0].textContent.toLowerCase();
+        const companyName = row.cells[1].textContent.toLowerCase();
+        const personName = row.cells[2].textContent.toLowerCase();
+        const email = row.cells[3].textContent.toLowerCase();
+        const phone = row.cells[4].textContent.toLowerCase();
+        const country = row.cells[5].textContent.toLowerCase();
+
+        const isVisible = partnerName.includes(searchTerm) ||
+                         companyName.includes(searchTerm) ||
+                         personName.includes(searchTerm) ||
+                         email.includes(searchTerm) ||
+                         phone.includes(searchTerm) ||
+                         country.includes(searchTerm);
+
+        if (isVisible) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    // Show/hide no results message
+    if (searchTerm && visibleCount === 0 && dataRows.length > 0) {
+        table.style.display = 'none';
+        noResultsDiv.style.display = 'block';
+    } else {
+        table.style.display = 'table';
+        noResultsDiv.style.display = 'none';
+    }
+
+    // Update total count
+    const totalElement = document.querySelector('.stat-item');
+    if (totalElement) {
+        const originalTotal = dataRows.length;
+        if (searchTerm) {
+            totalElement.textContent = `Showing: ${visibleCount} of ${originalTotal}`;
+        } else {
+            // Keep original total from backend pagination
+            const originalText = totalElement.textContent;
+            if (!originalText.includes('Total:')) {
+                totalElement.textContent = `Total: ${originalTotal}`;
+            }
+        }
+    }
+
+    // Hide pagination when searching
+    const paginationContainer = document.querySelector('.pagination-container');
+    if (paginationContainer) {
+        if (searchTerm) {
+            paginationContainer.style.display = 'none';
+        } else {
+            paginationContainer.style.display = 'flex';
+        }
+    }
+}
+
+// Edit Partner Function
+function editPartner(partnerId) {
+    // Fetch partner data and populate form
+    fetch(`/partners/get/${partnerId}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                populateForm(data.partner);
+                enterEditMode(partnerId);
+            } else {
+                alert('Error loading partner data: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error loading partner data');
+        });
+}
+
+// Populate form with partner data
+function populateForm(partner) {
+    document.getElementById('partner_name').value = partner.partner_name || '';
+    document.getElementById('company_name').value = partner.company_name || '';
+    document.getElementById('person_name').value = partner.person_name || '';
+    document.getElementById('email').value = partner.email || '';
+    document.getElementById('phone').value = partner.phone || '';
+    document.getElementById('country').value = partner.country || '';
+    document.getElementById('address').value = partner.address || '';
+}
+
+// Enter edit mode
+function enterEditMode(partnerId) {
+    document.getElementById('edit_partner_id').value = partnerId;
+    document.getElementById('formTitle').textContent = 'Edit Partner';
+    document.getElementById('editModeIndicator').style.display = 'flex';
+    document.getElementById('submitIcon').className = 'fas fa-save';
+    document.getElementById('submitText').textContent = 'Update Partner';
+    document.getElementById('cancelEditBtn').style.display = 'inline-flex';
+
+    // Scroll to form
+    document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Cancel edit mode
+function cancelEdit() {
+    document.getElementById('edit_partner_id').value = '';
+    document.getElementById('formTitle').textContent = 'Partner Details';
+    document.getElementById('editModeIndicator').style.display = 'none';
+    document.getElementById('submitIcon').className = 'fas fa-plus';
+    document.getElementById('submitText').textContent = 'Add Partner';
+    document.getElementById('cancelEditBtn').style.display = 'none';
+    resetForm();
+}
+
+// Reset form
+function resetForm() {
+    document.querySelector('.partner-form').reset();
+}
+
+// Delete Partner Function
+function deletePartner(partnerId, partnerName) {
+    document.getElementById('partnerNameToDelete').textContent = partnerName;
+    document.getElementById('deleteModal').style.display = 'block';
+
+    // Set up confirm delete button
+    document.getElementById('confirmDeleteBtn').onclick = function() {
+        performDelete(partnerId);
+    };
+}
+
+// Perform actual delete
+function performDelete(partnerId) {
+    fetch(`/partners/delete/${partnerId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            closeDeleteModal();
+            // Show success message before reload
+            showSuccessMessage(data.message);
+            // Delay reload to show message
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            closeDeleteModal();
+            alert('Error deleting partner: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        closeDeleteModal();
+        alert('Error deleting partner');
+    });
+}
+
+// Show success message function
+function showSuccessMessage(message) {
+    // Create success message element
+    const successDiv = document.createElement('div');
+    successDiv.className = 'alert alert-success';
+    successDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #10b981;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 1001;
+        font-size: 0.9rem;
+        font-weight: 500;
+        animation: slideInRight 0.3s ease-out;
+    `;
+    successDiv.innerHTML = `<i class="fas fa-check-circle" style="margin-right: 8px;"></i>${message}`;
+
+    // Add animation keyframes if not already added
+    if (!document.getElementById('successAnimationStyle')) {
+        const style = document.createElement('style');
+        style.id = 'successAnimationStyle';
+        style.textContent = `
+            @keyframes slideInRight {
+                from {
+                    opacity: 0;
+                    transform: translateX(100px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    document.body.appendChild(successDiv);
+
+    // Remove message after 3 seconds
+    setTimeout(() => {
+        if (successDiv.parentNode) {
+            successDiv.remove();
+        }
+    }, 3000);
+}
+
+// Close delete modal
+function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('deleteModal');
+    if (event.target === modal) {
+        closeDeleteModal();
+    }
+}
+
+// Export partners to Excel function
+function exportPartnersToExcel() {
+    // Get current filter values
+    const countryFilter = document.getElementById('countryFilter').value;
+
+    // Build URL with filters
+    let exportUrl = '/partners/export/';
+    const params = new URLSearchParams();
+
+    if (countryFilter) {
+        params.append('country_filter', countryFilter);
+    }
+
+    if (params.toString()) {
+        exportUrl += '?' + params.toString();
+    }
+
+    // Trigger download
+    window.location.href = exportUrl;
+}
+</script>
+
+{% endblock %}

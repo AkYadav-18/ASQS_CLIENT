@@ -1,0 +1,2297 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>American Skyline Quality Standards</title>
+<link rel="icon" type="image/jpeg" href="{% static 'images/ASQS_NEW.jpg' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f8fafc;
+}
+/* Navbar */
+.navbar {
+    display: flex;
+    align-items: center;
+    background-color: #010e36;
+    padding: 4px 20px;
+    position: relative;
+}
+.navbar img {
+    height: 60px;
+    margin-right: 20px;
+    flex-shrink: 0;
+}
+.navbar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+}
+.navbar ul li {
+    margin: 0 10px;
+}
+.navbar ul li a {
+    text-decoration: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+.navbar ul li a:hover {
+    background-color: #3b82f6;
+}
+.check-btn {
+    background-color: red;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+.check-btn:hover {
+    background-color: darkred;
+}
+
+/* Mobile Navigation */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 15px;
+        gap: 15px;
+    }
+    .navbar img {
+        margin-right: 0;
+        height: 50px;
+    }
+    .navbar ul {
+        justify-content: center;
+        gap: 5px;
+    }
+    .navbar ul li {
+        margin: 0 5px;
+    }
+    .navbar ul li a {
+        padding: 6px 8px;
+        font-size: 0.9rem;
+    }
+    .check-btn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Hero Section */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background:
+        linear-gradient(rgba(211,47,47,0.7), rgba(211,47,47,0.7)),
+        url("{% static 'images/Usa_Flag.jpeg' %}") center center/cover no-repeat;
+    color: white;
+    padding: 50px;
+    min-height: 300px;
+    gap: 30px;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    max-width: 400px;
+    font-weight: 400;
+    margin: 0;
+}
+h2{
+    font-weight: 400;
+}
+.hero img {
+    width: 480px;
+    max-width: 100%;
+    height: auto;
+    border-radius: 15px;
+    flex-shrink: 0;
+}
+
+/* Hero Responsive */
+@media (max-width: 1024px) {
+    .hero {
+        padding: 40px 30px;
+    }
+    .hero h1 {
+        font-size: 2.2rem;
+    }
+    .hero img {
+        width: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        padding: 30px 20px;
+        min-height: auto;
+        gap: 25px;
+    }
+    .hero h1 {
+        font-size: 2rem;
+        max-width: 100%;
+    }
+    .hero img {
+        width: 100%;
+        max-width: 350px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero {
+        padding: 25px 15px;
+    }
+    .hero h1 {
+        font-size: 1.8rem;
+    }
+}
+
+/* Additional Content Section */
+.content-section {
+    background: #f8fafc;
+    padding: 25px 7vw;
+    display: flex;
+    align-items: flex-start;
+    gap: 60px;
+    justify-content: space-between;
+}
+.content-left {
+    max-width: 650px;
+    flex: 1;
+}
+.certificate-image {
+    min-width: 320px;
+    max-width: 380px;
+    height: auto;
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(44,44,44,0.10);
+    flex-shrink: 0;
+}
+
+/* Content Section Responsive */
+@media (max-width: 1024px) {
+    .content-section {
+        padding: 50px 5vw;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .content-section {
+        flex-direction: column;
+        gap: 30px;
+        padding: 40px 4vw;
+        align-items: center;
+        text-align: center;
+    }
+    .content-left {
+        max-width: 100%;
+    }
+    .certificate-image {
+        min-width: 280px;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-section {
+        padding: 30px 15px;
+        gap: 25px;
+    }
+    .certificate-image {
+        min-width: 250px;
+    }
+}
+
+.content-left h2 {
+    font-size: 2.2rem;
+    color: #1e40af;
+    margin-bottom: 20px;
+}
+.content-left p {
+    margin-top: 50px;
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 25px;
+    line-height: 1.7;
+}
+.read-more-btn {
+    margin-top: 60px;
+    background-color: #3b82f6;
+    color: white;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 10px;
+    display: inline-block;
+    text-decoration: none;
+}
+.read-more-btn:hover {
+    background-color: #2563eb;
+}
+
+/* Content Text Responsive */
+@media (max-width: 768px) {
+    .content-left h2 {
+        font-size: 1.9rem;
+        text-align: center;
+    }
+    .content-left p {
+        margin-top: 30px;
+        font-size: 1rem;
+        text-align: center;
+    }
+    .read-more-btn {
+        margin-top: 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-left h2 {
+        font-size: 1.6rem;
+    }
+    .content-left p {
+        font-size: 0.95rem;
+        margin-top: 25px;
+    }
+    .read-more-btn {
+        padding: 10px 24px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Our Services Section */
+.services-section {
+    background: url("{% static 'images/red_bgr_2.jpg' %}") no-repeat center center;
+    background-size: cover;
+    padding: 5px 20px 80px 20px;
+    text-align: center;
+    position: relative;
+}
+
+.services-section h2 {
+    color: #fff;
+    font-size: 2.6rem;
+    margin-bottom: 10px;
+    font-weight: 400;
+}
+.services-section .underline {
+    width: 60px;
+    height: 4px;
+    background: #fff;
+    margin: 0 auto 38px auto;
+    border-radius: 2px;
+}
+.services-cards {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+    margin-top: 35px;
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+}
+
+.services-cards-wrapper {
+    display: flex;
+    gap: 30px;
+    animation: flowLeftToRight 20s linear infinite;
+    width: calc(320px * 8 + 30px * 7); /* Width for 8 cards (4 original + 4 duplicates) */
+}
+
+.service-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(44,44,44,0.10);
+    width: 320px;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+/* Continuous left-to-right flowing animation */
+@keyframes flowLeftToRight {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc(-320px * 4 - 30px * 4)); /* Move by width of 4 cards */
+    }
+}
+
+/* Hover effect for service cards */
+.service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(44,44,44,0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Pause animation on hover */
+.services-cards:hover .services-cards-wrapper {
+    animation-play-state: paused;
+}
+.service-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+.service-card-content {
+    padding: 25px 25px 32px 25px;
+    text-align: left;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+.service-card-content h3 {
+    color: #1e40af;
+    font-size: 1.23rem;
+    margin: 0 0 10px 0;
+    font-weight: 400;
+}
+.service-card-content p {
+    color: #383838;
+    font-size: 1.05rem;
+    margin-bottom: 0;
+    line-height: 1.6;
+}
+
+/* Services Responsive */
+@media (max-width: 1024px) {
+    .services-cards-wrapper {
+        width: calc(280px * 8 + 25px * 7);
+    }
+    .service-card {
+        width: 280px;
+        min-width: 280px;
+    }
+    .services-cards-wrapper {
+        gap: 25px;
+    }
+    @keyframes flowLeftToRight {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(calc(-280px * 4 - 25px * 4));
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .services-section {
+        padding: 50px 15px 60px 15px;
+    }
+    .services-section h2 {
+        font-size: 2.2rem;
+    }
+    .services-cards-wrapper {
+        width: calc(250px * 8 + 20px * 7);
+        gap: 20px;
+    }
+    .service-card {
+        width: 250px;
+        min-width: 250px;
+    }
+    @keyframes flowLeftToRight {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(calc(-250px * 4 - 20px * 4));
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .services-section {
+        padding: 40px 15px 50px 15px;
+    }
+    .services-section h2 {
+        font-size: 1.9rem;
+    }
+    .services-cards-wrapper {
+        width: calc(220px * 8 + 15px * 7);
+        gap: 15px;
+    }
+    .service-card {
+        width: 220px;
+        min-width: 220px;
+    }
+    .service-card-content {
+        padding: 15px;
+    }
+    .service-card-content h3 {
+        font-size: 1.1rem;
+    }
+    .service-card-content p {
+        font-size: 0.9rem;
+    }
+    @keyframes flowLeftToRight {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(calc(-220px * 4 - 15px * 4));
+        }
+    }
+}
+
+/* About ASQS Section */
+.about-ASQS-section {
+    background: #e0f0ff;
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.about-ASQS-section h2 {
+    color: #1e40af;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.about-ASQS-section .underline {
+    width: 100px;
+    height: 4px;
+    background: #1e40af;
+    margin: 0 auto 40px auto;
+    border-radius: 2px;
+}
+
+.about-ASQS-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: left;
+    flex-wrap: nowrap;
+}
+
+.about-ASQS-image {
+    flex: 0 0 300px;
+    order: 1;
+    min-width: 300px;
+}
+
+.about-image-main {
+    width: 100%;
+    max-width: 300px;
+    height: 350px !important;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+}
+
+.about-ASQS-text {
+    flex: 1;
+    order: 2;
+    min-width: 0;
+}
+
+.about-ASQS-text p {
+    color: #333;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    text-align: justify;
+}
+
+.about-features-main {
+    display: flex;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.feature-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #1e40af;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.feature-main i {
+    font-size: 1.2rem;
+}
+
+/* About ASQS Responsive */
+@media (min-width: 769px) {
+    .about-ASQS-content {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: flex-start;
+        gap: 20px;
+        flex-wrap: nowrap;
+    }
+
+    .about-ASQS-image {
+        flex: 0 0 300px !important;
+        order: 1 !important;
+        min-width: 300px;
+    }
+
+    .about-ASQS-text {
+        flex: 1 !important;
+        order: 2 !important;
+        text-align: left;
+        margin-left: 0;
+        padding-left: 0;
+    }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+    .about-ASQS-content {
+        gap: 15px;
+    }
+
+    .about-ASQS-image {
+        flex: 0 0 250px !important;
+        min-width: 250px;
+    }
+
+    .about-image-main {
+        max-width: 250px;
+    }
+
+    .about-features-main {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-ASQS-section {
+        padding: 40px 15px;
+    }
+
+    .about-ASQS-section h2 {
+        font-size: 2.2rem;
+    }
+
+    .about-ASQS-content {
+        flex-direction: column !important;
+        text-align: center;
+        gap: 30px;
+    }
+
+    .about-ASQS-image {
+        flex: none !important;
+        max-width: 300px;
+        order: 1;
+        margin: 0 auto;
+    }
+
+    .about-image-main {
+        max-width: 300px;
+    }
+
+    .about-ASQS-text {
+        text-align: center;
+        order: 2;
+    }
+
+    .about-features-main {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-ASQS-section h2 {
+        font-size: 1.9rem;
+    }
+
+    .about-ASQS-text p {
+        font-size: 1rem;
+    }
+
+    .about-features-main {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .feature-main {
+        font-size: 0.9rem;
+    }
+}
+
+/* Across The Globe Section - New Professional Theme */
+.across-globe-section {
+    background-size: cover;
+    position: relative;
+    z-index: 1;
+}
+.across-globe-content {
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+.globe-card {
+    background: #eef3f7 url("{% static 'images/world_map.jpg' %}") center center no-repeat;
+    background-size: cover;
+    box-shadow: 0 2px 22px rgba(36,60,90,.09);
+    padding: 44px 26px 56px;
+}
+.across-globe-title {
+    text-align: center;
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: .6px;
+    color: #2457a7;
+    margin: 0 0 28px;
+}
+.across-globe-title::after {
+    content: "";
+    display: block;
+    width: 70px;
+    height: 4px;
+    border-radius: 2px;
+    margin: 14px auto 0;
+    background: #2457a7;
+    opacity: .18;
+}
+.across-globe-underline {
+    display: none; /* Hidden as we use ::after pseudo-element */
+}
+.across-globe-flags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px 28px;
+    margin-top: 6px;
+}
+.across-globe-flag-col {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 22px 12px 12px;
+    min-width: 180px;
+    background: #f8fbfe;
+    border: 1.5px solid #dde6ee;
+    border-radius: 16px;
+    box-shadow: 0 1px 6px rgba(50,70,112,.06);
+    transition: background .18s, border-color .18s, box-shadow .18s, transform .18s;
+}
+.across-globe-flag-col:hover,
+.across-globe-flag-col:focus {
+    background: #f1f6fb;
+    border-color: #bdd2ee;
+    box-shadow: 0 8px 26px rgba(44,87,168,.12);
+    transform: translateY(-2px);
+}
+.across-globe-flag-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.2px solid #e7edf3;
+    background: #f3f7fb;
+}
+.across-globe-flag-label {
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: .2px;
+    color: #24364b;
+    white-space: nowrap;
+}
+/* Decorative Skyline */
+.across-globe-skyline {
+    margin-top: -50px;
+    width: 100%;
+    max-width: 100vw;
+    height: auto;
+    opacity: 1000;
+    display: block;
+    pointer-events: none;
+}
+
+/* Industries We Cater Section */
+.industries-section {
+    margin-top: -50px;
+    background:#e4f2ff;
+    padding:60px 0;
+}
+.industries-title {
+    text-align:center;
+    font-size:2.7rem;
+    font-weight:400;
+    color:#181818;
+    margin-bottom:10px;
+}
+.industries-underline {
+    width:100px;
+    height:4px;
+    background:#3b82f6;
+    margin:0 auto 34px auto;
+    border-radius:2px;
+}
+.industries-cards {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:32px;
+}
+.industries-cards-row {
+    display:flex;
+    gap:28px;
+}
+.industry-card {
+    background:#fff;
+    box-shadow:0 4px 18px rgba(44,44,44,0.10);
+    border-radius:4px;
+    text-align:center;
+    width:200px;
+}
+.industry-card img {
+    width:100%;
+    height:110px;
+    object-fit:cover;
+}
+.industry-card-label {
+    font-size:1.19rem;
+    font-weight:400;
+    padding:17px 0;
+}
+
+/* Footer */
+.footer-wrapper {
+    background:#010e36;
+    padding:60px 0 0 0;
+    color:#fff;
+}
+.footer-content {
+    display:flex;
+    justify-content:space-around;
+    align-items:flex-start;
+    max-width:1600px;
+    margin:0 auto;
+    flex-wrap:wrap;
+    gap:1vw;
+}
+.footer-block {
+    min-width:200px;
+    margin-bottom:40px;
+}
+.footer-block h3 {
+    color:#d32f2f;
+    margin-bottom:20px;
+    font-size:1.2rem;
+    font-weight:400;
+}
+.footer-block ul {
+    list-style:none;
+    padding:0;
+    margin:0;
+    font-size: 0.7rem;
+}
+.footer-block ul li {
+    margin-bottom:8px;
+}
+.footer-block a, .footer-block {
+    color:#fff;
+    text-decoration:none;
+    font-size:0.7rem;
+}
+.footer-block a:hover {
+    text-decoration:underline;
+}
+.footer-cert-services ul {
+    columns:2;
+    -webkit-columns:2;
+    -moz-columns:2;
+    gap:25px;
+    font-size: 0.7rem;
+}
+.footer-procedures {
+    max-width:320px;
+    font-size:0.7rem;
+}
+.footer-form-block h3 {
+    color:#d32f2f;
+    margin-bottom:20px;
+    font-size:1.1rem;
+    font-weight:500;
+}
+.footer-form-row {
+    display:flex;
+    gap:16px;
+    margin-bottom:12px;
+}
+.footer-form-row input,
+.footer-form-row textarea {
+    width:100%;
+    padding:12px 14px;
+    border:1px solid #ddd;
+    border-radius:6px;
+    font-size:0.85rem;
+    margin-bottom:0;
+    box-sizing:border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background: #fff;
+}
+.footer-form-row input:focus,
+.footer-form-row textarea:focus {
+    outline: none;
+    border-color: #d32f2f;
+    box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.1);
+}
+.footer-form-row textarea {
+    resize:vertical;
+    min-height:80px;
+    max-height:150px;
+    font-family: inherit;
+}
+.footer-form-row input[type="submit"], .footer-form-submit {
+    width:100%;
+    background:#d32f2f;
+    color:#fff;
+    font-weight:500;
+    font-size:0.9rem;
+    padding:14px 0;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    margin-top:15px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.footer-form-row input[type="submit"]:hover, .footer-form-submit:hover {
+    background:#b71c1c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+}
+.footer-form-row input[type="submit"]:active, .footer-form-submit:active {
+    transform: translateY(0);
+}
+
+/* Form validation styles */
+.footer-form-row input:invalid,
+.footer-form-row textarea:invalid {
+    border-color: #e74c3c;
+}
+.footer-form-row input:valid,
+.footer-form-row textarea:valid {
+    border-color: #27ae60;
+}
+
+/* Loading state */
+.footer-form-submit:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Form messages styling */
+.form-messages {
+    margin-top: 15px;
+}
+.alert {
+    padding: 12px 15px;
+    margin: 8px 0;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    border: 1px solid transparent;
+}
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+/* Certificate Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal.show {
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 3% auto;
+    padding: 0;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 650px;
+    max-height: 85vh;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+    overflow: hidden;
+    transform: translateY(-50px);
+    transition: transform 0.3s ease-out;
+}
+
+.modal.show .modal-content {
+    transform: translateY(0);
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    color: white;
+    padding: 20px 25px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 500;
+}
+
+.close {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 30px 25px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #d32f2f;
+    box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.btn-cancel, .btn-submit, .btn-new-search, .btn-close {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-cancel, .btn-close {
+    background: #f5f5f5;
+    color: #666;
+    border: 2px solid #e0e0e0;
+}
+
+.btn-cancel:hover, .btn-close:hover {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.btn-submit, .btn-new-search {
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    color: white;
+}
+
+.btn-submit:hover, .btn-new-search:hover {
+    background: linear-gradient(135deg, #b71c1c, #8d1414);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(211, 47, 47, 0.3);
+}
+
+/* Certificate Result Styles */
+.certificate-result {
+    margin-top: 30px;
+    border-top: 2px solid #f0f0f0;
+    padding-top: 25px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.result-header h3 {
+    color: #d32f2f;
+    margin: 0 0 20px 0;
+    font-size: 1.3rem;
+    font-weight: 500;
+    position: sticky;
+    top: 0;
+    background: white;
+    padding-bottom: 10px;
+    z-index: 10;
+}
+
+.certificate-details {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+/* Custom scrollbar for certificate results */
+.certificate-result::-webkit-scrollbar {
+    width: 8px;
+}
+
+.certificate-result::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.certificate-result::-webkit-scrollbar-thumb {
+    background: #d32f2f;
+    border-radius: 4px;
+}
+
+.certificate-result::-webkit-scrollbar-thumb:hover {
+    background: #b71c1c;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #495057;
+    min-width: 140px;
+}
+
+.detail-value {
+    color: #212529;
+    text-align: right;
+    flex: 1;
+}
+
+.status-active {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.status-expired {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.result-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .modal-content {
+        margin: 10% auto;
+        width: 95%;
+    }
+
+    .modal-header {
+        padding: 15px 20px;
+    }
+
+    .modal-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    .form-actions, .result-actions {
+        flex-direction: column;
+    }
+
+    .btn-cancel, .btn-submit, .btn-new-search, .btn-close {
+        width: 100%;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .detail-value {
+        text-align: left;
+    }
+}
+/* Contact Info Styles */
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.contact-icon {
+    background: #d32f2f;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.contact-details h4 {
+    color: #d32f2f;
+    margin: 0 0 5px 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.contact-details p {
+    color: #fff;
+    margin: 0;
+    font-size: 0.75rem;
+    line-height: 1.4;
+}
+
+/* Footer Bottom Bar */
+.footer-bottom {
+    background: white;
+    padding: 9px 9px 9 4px;
+}
+.footer-bottom-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 0px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.footer-social {
+    display: flex;
+    gap: 15px;
+    order: 1;
+}
+.footer-social a {
+    color: #fff;
+    background: #d32f2f;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+    text-decoration: none;
+}
+.footer-social a:hover {
+    background: #d32f2f;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+}
+
+.footer-bottom-logo {
+    height: 60px;
+    width: auto;
+    order: 2;
+}
+.footer-copy {
+    color: #555;
+    font-size: 0.8rem;
+    margin: 0;
+    font-weight: 500;
+    order: 3;
+}
+
+
+
+/* Footer Bottom Responsive */
+@media (max-width: 768px) {
+    .footer-bottom-bar {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+        padding: 0 15px;
+    }
+    .footer-social {
+        order: 1;
+        justify-content: center;
+    }
+    .footer-bottom-logo {
+        order: 2;
+        height: 50px;
+    }
+    .footer-copy {
+        order: 3;
+        font-size: 0.9rem;
+    }
+
+}
+
+@media (max-width: 480px) {
+    .footer-bottom {
+        padding: 15px 10px 0 10px;
+    }
+    .footer-social a {
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
+    }
+    .footer-bottom-logo {
+        height: 45px;
+    }
+    .footer-copy {
+        font-size: 0.85rem;
+    }
+   
+}
+
+/* Additional Responsive Improvements */
+@media (max-width: 1200px) {
+    .footer-content {
+        padding: 0 30px;
+        gap: 30px;
+    }
+    .across-globe-flags {
+        gap: 18px 24px;
+    }
+    .across-globe-flag-col {
+        min-width: 150px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 25px;
+        padding: 0 20px;
+    }
+    
+    
+    .industries-section {
+        padding: 35px 20px;
+    }
+    .industries-cards-row {
+        gap: 20px;
+        justify-content: center;
+    }
+    .industry-card {
+        width: 180px;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        gap: 20px;
+        padding: 0 15px;
+    }
+    .footer-block {
+        margin-bottom: 25px;
+    }
+    .footer-block h3 {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+    .footer-block ul li {
+        margin-bottom: 6px;
+    }
+
+    .globe-card {
+        padding: 30px 16px 36px;
+    }
+    .across-globe-title {
+        font-size: 1.9rem;
+    }
+    .across-globe-flags {
+        gap: 16px 20px;
+    }
+    .across-globe-flag-col {
+        min-width: 135px;
+        padding: 10px 14px 10px 10px;
+        gap: 8px;
+    }
+    .across-globe-flag-img {
+        width: 26px;
+        height: 26px;
+    }
+    .across-globe-flag-label {
+        font-size: 0.9rem;
+    }
+    .industries-title {
+        font-size: 2.2rem;
+    }
+    .industries-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+    .industries-cards-row {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+    .industry-card {
+        width: 160px;
+    }
+}
+
+@media (max-width: 480px) {footer-block
+    .footer-content {
+        padding: 0 10px;
+        gap: 15px;
+    }
+    .footer-block {
+        margin-bottom: 20px;
+    }
+    .footer-block h3 {
+        font-size: 1rem;
+    }
+    .footer-block ul, .footer-block a, .footer-block {
+        font-size: 0.65rem;
+    }
+    .footer-form-block h3 {
+        font-size: 1rem;
+    }
+    .footer-form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .footer-form-row input,
+    .footer-form-row textarea {
+        padding: 12px;
+        font-size: 0.8rem;
+    }
+    .footer-form-submit {
+        font-size: 0.8rem;
+        padding: 12px 0;
+    }
+
+    /* Contact info responsive */
+    .contact-item {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .contact-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+    .contact-details h4 {
+        font-size: 0.85rem;
+    }
+    .contact-details p {
+        font-size: 0.7rem;
+    }
+    .across-globe-title {
+        font-size: 1.7rem;
+    }
+    .industries-title {
+        font-size: 1.9rem;
+    }
+    .industry-card {
+        width: 140px;
+    }
+    .industry-card img {
+        height: 90px;
+    }
+    .industry-card-label {
+        font-size: 1rem;
+        padding: 12px 0;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <img src="{% static 'images/ASQS_NEW.jpg' %}" alt="Company Logo">
+    <ul>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'services' %}">Services</a></li>
+        <li><a href="{% url 'about_us' %}">About Us</a></li>
+        <li><a href="#contact" onclick="smoothScrollTo('contact')">Contact Us</a></li>
+    </ul>
+    <a href="#" class="check-btn" onclick="openCertificateModal()">Check Certificate</a>
+</div>
+
+<!-- Hero Section -->
+<div id="home" class="hero">
+    <h1>A Global ISO Certification Body</h1>
+<img src="{% static 'images/ASQS.webp' %}" alt="Banner Image" style="width:300px; height:300px; margin-right: 150px;"></div>
+
+<!-- Additional Content Section (Welcome) -->
+<div class="content-section">
+    <div class="content-left">
+        <h2>
+            <div>Welcome to American Skyline</div>
+            <div>Quality Standards</div>
+            <div>Your ISO Certification Partner</div>
+            </h2>
+
+        <p>
+            American Skyline Quality Standardsis a globally recognized ISO Certification body and has a specialized wide pool of auditors and technical experts in each field to conduct audits at clients across various industries like construction, manufacturing, software, food and service sector companies. American Skyline Quality Standardsis accredited by United Accreditation Foundation (UAF) USA, a member of IAF.
+        </p>
+        <a class="read-more-btn" href="#">READ MORE</a>
+    </div>
+    <img class="certificate-image" src="{% static 'images/certificate.jpeg' %}" alt="Sample ISO Certificate">
+</div>
+
+<!-- Our Services Section -->
+<div class="services-section">
+    <h2>Our Services</h2>
+    <div class="underline"></div>
+    <div class="services-cards">
+        <div class="services-cards-wrapper">
+            <!-- Service Card 1 -->
+            <div class="service-card">
+                <img src="{% static 'images/services.webp' %}" alt="ISO Certification for Organizations">
+                <div class="service-card-content">
+                    <h3>ISO Certification for Organizations</h3>
+                    <p>
+                        We offer ISO Certification for Organization across all industries like ISO 9001, 14001, 22000, 27001, 45001, 50000.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Service Card 2 -->
+            <div class="service-card">
+                <img src="{% static 'images/service2.jpg' %}" alt="Product Certification">
+                <div class="service-card-content">
+                    <h3>Product Certification</h3>
+                    <p>
+                        We provide comprehensive product certification services including CE marking, BIS certification, and other regulatory compliance certifications.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Service Card 3 -->
+            <div class="service-card">
+                <img src="{% static 'images/services.webp' %}" alt="Training & Consultancy">
+                <div class="service-card-content">
+                    <h3>Training & Consultancy</h3>
+                    <p>
+                        Expert training programs and consultancy services to help organizations implement and maintain quality management systems effectively.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Service Card 4 -->
+            <div class="service-card">
+                <img src="{% static 'images/service2.jpg' %}" alt="Audit & Assessment">
+                <div class="service-card-content">
+                    <h3>Audit & Assessment</h3>
+                    <p>
+                        Professional audit and assessment services to evaluate compliance with international standards and identify areas for improvement.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Duplicate cards for seamless loop -->
+            <!-- Service Card 1 (Duplicate) -->
+            <div class="service-card">
+                <img src="{% static 'images/services.webp' %}" alt="ISO Certification for Organizations">
+                <div class="service-card-content">
+                    <h3>ISO Certification for Organizations</h3>
+                    <p>
+                        We offer ISO Certification for Organization across all industries like ISO 9001, 14001, 22000, 27001, 45001, 50000.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Service Card 2 (Duplicate) -->
+            <div class="service-card">
+                <img src="{% static 'images/service2.jpg' %}" alt="Product Certification">
+                <div class="service-card-content">
+                    <h3>Product Certification</h3>
+                    <p>
+                        We provide comprehensive product certification services including CE marking, BIS certification, and other regulatory compliance certifications.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Service Card 3 (Duplicate) -->
+            <div class="service-card">
+                <img src="{% static 'images/services.webp' %}" alt="Training & Consultancy">
+                <div class="service-card-content">
+                    <h3>Training & Consultancy</h3>
+                    <p>
+                        Expert training programs and consultancy services to help organizations implement and maintain quality management systems effectively.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Service Card 4 (Duplicate) -->
+            <div class="service-card">
+                <img src="{% static 'images/service2.jpg' %}" alt="Audit & Assessment">
+                <div class="service-card-content">
+                    <h3>Audit & Assessment</h3>
+                    <p>
+                        Professional audit and assessment services to evaluate compliance with international standards and identify areas for improvement.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- About ASQS Section -->
+<div id="about" class="about-ASQS-section">
+    <div class="container">
+        <h2>About ASQS</h2>
+        <div class="underline"></div>
+        <div class="about-ASQS-content">
+            <div class="about-ASQS-left">
+                <div class="about-ASQS-image">
+<img src="{% static 'images/ASQS_2.webp' %}" alt="American Skyline Quality Standards" class="about-image-main" height="200">
+                </div>
+            </div>
+            <div class="about-ASQS-right">
+                <div class="about-ASQS-text">
+                    <p>
+                        The <strong>American Skyline Quality Standards (ASQS)</strong> is a worldwide association of accreditation bodies and other bodies interested in conformity assessment in the fields of management systems, products, processes, services, personnel, validation and verification and other similar programmes of conformity assessment.
+                    </p>
+                    <p>
+                        Our primary function is to develop a single worldwide program of conformity assessment which reduces risk for businesses and their customers by assuring them that accredited certificates and validation and verification statements may be relied upon.
+                    </p>
+                    <div class="about-features-main">
+                        <div class="feature-main">
+                            <i class="fas fa-globe"></i>
+                            <span>Worldwide Recognition</span>
+                        </div>
+                        <div class="feature-main">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Risk Reduction</span>
+                        </div>
+                        <div class="feature-main">
+                            <i class="fas fa-certificate"></i>
+                            <span>Reliable Certification</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Across The Globe Section -->
+<div class="across-globe-section">
+    <div class="across-globe-content">
+        <div class="globe-card">
+            <h2 class="across-globe-title">Across The Globe</h2>
+            <div class="across-globe-underline"></div>
+            <div class="across-globe-flags">
+            <!-- Repeat these .across-globe-flag-col blocks for each country, set your image paths -->
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/ind.png' %}" alt="India">
+                    <span class="across-globe-flag-label">India</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/uk.png' %}" alt="UK">
+                    <span class="across-globe-flag-label">UK</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/kw.png' %}" alt="Kuwait">
+                    <span class="across-globe-flag-label">Kuwait</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/us.png' %}" alt="USA">
+                    <span class="across-globe-flag-label">USA</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/itl.png' %}" alt="Italy">
+                    <span class="across-globe-flag-label">Italy</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/uae.png' %}" alt="UAE">
+                    <span class="across-globe-flag-label">UAE</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/trk.png' %}" alt="Turkey">
+                    <span class="across-globe-flag-label">Turkey</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/brazil.png' %}" alt="Brazil">
+                    <span class="across-globe-flag-label">Brazil</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/malaysia.png' %}" alt="Malaysia">
+                    <span class="across-globe-flag-label">Malaysia</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/nigeria.png' %}" alt="Nigeria">
+                    <span class="across-globe-flag-label">Nigeria</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/bgl.png' %}" alt="Bangladesh">
+                    <span class="across-globe-flag-label">Bangladesh</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/egypt.png' %}" alt="Egypt">
+                    <span class="across-globe-flag-label">Egypt</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/sp.png' %}" alt="Singapore">
+                    <span class="across-globe-flag-label">Singapore</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/mxc.png' %}" alt="Mexico">
+                    <span class="across-globe-flag-label">Mexico</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="https://flagcdn.com/iq.svg" alt="Iraq">
+                    <span class="across-globe-flag-label">Iraq</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/sab.png' %}" alt="South Africa">
+                    <span class="across-globe-flag-label">South Africa</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/sab.png' %}" alt="Saudi Arabia">
+                    <span class="across-globe-flag-label">Saudi Arabia</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="{% static 'images/peru.png' %}" alt="Peru">
+                    <span class="across-globe-flag-label">Peru</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="https://flagcdn.com/ch.svg" alt="Switzerland">
+                    <span class="across-globe-flag-label">Switzerland</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="https://flagcdn.com/de.svg" alt="Germany">
+                    <span class="across-globe-flag-label">Germany</span>
+                </div>
+                <div class="across-globe-flag-col">
+                    <img class="across-globe-flag-img" src="https://flagcdn.com/ca.svg" alt="Canada">
+                    <span class="across-globe-flag-label">Canada</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Industries We Cater Section -->
+<div class="industries-section">
+    <h2 class="industries-title">Industries We Cater</h2>
+    <div class="industries-underline"></div>
+    <div class="industries-cards">
+        <!-- Row 1 -->
+        <div class="industries-cards-row">
+            <div class="industry-card">
+                <img src="{% static 'images/software.jpg' %}" alt="IT SERVICES">
+                <div class="industry-card-label">IT SERVICES</div>
+            </div>
+            <div class="industry-card">
+                <img src="{% static 'images/electirical.png' %}" alt="ELECTRICAL">
+                <div class="industry-card-label">ELECTRICAL</div>
+            </div>
+            <div class="industry-card">
+                <img src="{% static 'images/chemical.png' %}" alt="CHEMICAL">
+                <div class="industry-card-label">CHEMICAL</div>
+            </div>
+            <div class="industry-card">
+                <img src="{% static 'images/hotel.png' %}" alt="HOTELS">
+                <div class="industry-card-label">HOTELS</div>
+            </div>
+            <div class="industry-card">
+                <img src="{% static 'images/automative.png' %}" alt="AUTOMOTIVE">
+                <div class="industry-card-label">AUTOMOTIVE</div>
+            </div>
+            <div class="industry-card">
+                <img src="{% static 'images/medical.png' %}" alt="MEDICAL">
+                <div class="industry-card-label">MEDICAL</div>
+            </div>
+        </div>
+        <!-- Row 2 -->
+        <div class="industries-cards-row">
+            <div class="industry-card">
+                <img src="{% static 'images/educa.png' %}" alt="EDUCATION">
+                <div class="industry-card-label">EDUCATION</div>
+            </div>
+            <div class="industry-card">
+                <img src="{% static 'images/construction.jpg' %}" alt="CONSTRUCTION">
+                <div class="industry-card-label">CONSTRUCTION</div>
+            </div>
+            <div class="industry-card">
+                <img src="{% static 'images/raailway.png' %}" alt="RAILWAY">
+                <div class="industry-card-label">RAILWAY</div>
+            </div>
+            <div class="industry-card">
+                <img src="{% static 'images/food.png' %}" alt="FOOD PRODUCTS">
+                <div class="industry-card-label">FOOD PRODUCTS</div>
+            </div>
+            <div class="industry-card">
+                <img src="{% static 'images/trasns.png' %}" alt="TRANSPORT">
+                <div class="industry-card-label">TRANSPORT</div>
+            </div>
+            <div class="industry-card">
+                <img src="{% static 'images/public.png' %}" alt="PUBLIC SECTOR">
+                <div class="industry-card-label">PUBLIC SECTOR</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Certificate Check Modal -->
+<div id="certificateModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Check Certificate Status</h2>
+            <span class="close" onclick="closeCertificateModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="certificateCheckForm">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="clientName">Client Name:</label>
+                    <input type="text" id="clientName" name="client_name" required
+                           placeholder="Enter client name">
+                </div>
+                <div class="form-group">
+                    <label for="certificateNumber">Certificate Number:</label>
+                    <input type="text" id="certificateNumber" name="certificate_number" required
+                           placeholder="Enter certificate number">
+                </div>
+                <div class="form-actions">
+                    <button type="button" onclick="closeCertificateModal()" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-submit">Check Certificate</button>
+                </div>
+            </form>
+
+            <!-- Certificate Details Display -->
+            <div id="certificateResult" class="certificate-result" style="display: none;">
+                <div class="result-header">
+                    <h3>Certificate Details</h3>
+                </div>
+                <div id="certificateDetails" class="certificate-details">
+                    <!-- Certificate details will be populated here -->
+                </div>
+                <div class="result-actions">
+                    <button type="button" onclick="resetCertificateModal()" class="btn-new-search">New Search</button>
+                    <button type="button" onclick="closeCertificateModal()" class="btn-close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div id="contact" class="footer-wrapper">
+    <div class="footer-content">
+        <div class="footer-block">
+            <h3>Get in Touch</h3>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h4>Phone Number</h4>
+                        <p>+91 9689589580</p>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h4>Email</h4>
+                        <p>support@universalbrandcertification.com</p>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h4>Address</h4>
+                        <p>American Skyline Quality Standardss - Gutenberg It Park, Hyderabad, Telangana, INDIA 500081</p>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h4>Address</h4>
+                        <p>Accreditation by United State Accreditation Brand (USAB)<br>
+                        545/Main St, Washington Boulevard, New Jersey, USA</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-block footer-form-block">
+            <h3>Enquiry Now</h3>
+            <form method="post" action="{% url 'home' %}" id="enquiryForm">
+                {% csrf_token %}
+                <div class="footer-form-row" style="display:flex;gap:13px;">
+                    <input type="text" name="name" placeholder="Name" required
+                           value="{% if form_data %}{{ form_data.name }}{% endif %}">
+                    <input type="email" name="email" placeholder="Email" required
+                           value="{% if form_data %}{{ form_data.email }}{% endif %}">
+                </div>
+                <div class="footer-form-row" style="display:flex;gap:13px;">
+                    <input type="text" name="mobile" placeholder="Mobile" required
+                           value="{% if form_data %}{{ form_data.mobile }}{% endif %}">
+                    <input type="text" name="subject" placeholder="Subject" required
+                           value="{% if form_data %}{{ form_data.subject }}{% endif %}">
+                </div>
+                <div class="footer-form-row" style="margin-bottom:0;">
+                    <textarea name="message" placeholder="Message" required>{% if form_data %}{{ form_data.message }}{% endif %}</textarea>
+                </div>
+                <input class="footer-form-submit" type="submit" value="SUBMIT" id="submitBtn">
+            </form>
+
+            <!-- Success/Error Messages -->
+            {% if messages %}
+                <div class="form-messages">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <!-- Make sure you have Font Awesome loaded in your <head> -->
+<!-- Example: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
+
+<div class="footer-bottom">
+    <div class="footer-bottom-bar">
+        <div class="footer-social">
+            <a href="https://www.instagram.com/brandcertificationltd?igsh=MW95dHF3eXM2YTB4eA==" target="_blank" aria-label="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/universal-brand-certifications-services-701943349?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" aria-label="LinkedIn">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="https://www.facebook.com/share/16e9ZCe3ah/" target="_blank" aria-label="Facebook">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+
+        </div>
+        <img class="footer-bottom-logo" src="{% static 'images/ASQS_NEW.jpg' %}" alt="Footer Logo">
+        <div class="footer-copy">
+            &copy;All Right Copy Right Reserved. 2023
+        </div>
+    </div>
+ 
+</div>
+
+</div>
+
+<script>
+// Enhanced form handling
+document.addEventListener('DOMContentLoaded', function() {
+    const enquiryForm = document.getElementById('enquiryForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    if (enquiryForm) {
+        // Form submission handling
+        enquiryForm.addEventListener('submit', function(e) {
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.value = 'SUBMITTING...';
+
+            // Re-enable after 3 seconds (in case of slow response)
+            setTimeout(function() {
+                if (submitBtn.disabled) {
+                    submitBtn.disabled = false;
+                    submitBtn.value = 'SUBMIT';
+                }
+            }, 3000);
+        });
+
+        // Real-time validation
+        const inputs = enquiryForm.querySelectorAll('input, textarea');
+        inputs.forEach(function(input) {
+            input.addEventListener('blur', function() {
+                validateField(this);
+            });
+
+            input.addEventListener('input', function() {
+                // Remove error styling on input
+                this.style.borderColor = '';
+            });
+        });
+    }
+
+    // Auto-hide messages after 5 seconds
+    const messages = document.querySelectorAll('.alert');
+    messages.forEach(function(message) {
+        setTimeout(function() {
+            message.style.opacity = '0';
+            message.style.transition = 'opacity 0.5s ease';
+            setTimeout(function() {
+                message.remove();
+            }, 500);
+        }, 5000);
+    });
+});
+
+function validateField(field) {
+    const value = field.value.trim();
+
+    // Basic validation
+    if (field.hasAttribute('required') && !value) {
+        field.style.borderColor = '#e74c3c';
+        return false;
+    }
+
+    // Email validation
+    if (field.type === 'email' && value) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+            field.style.borderColor = '#e74c3c';
+            return false;
+        }
+    }
+
+    // Mobile validation (basic)
+    if (field.name === 'mobile' && value) {
+        const mobileRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
+        if (!mobileRegex.test(value)) {
+            field.style.borderColor = '#e74c3c';
+            return false;
+        }
+    }
+
+    field.style.borderColor = '#27ae60';
+    return true;
+}
+
+// Smooth scroll to form on error (if messages exist)
+if (document.querySelector('.alert-error')) {
+    document.querySelector('.footer-form-block').scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+    });
+}
+
+// Smooth scroll function for navigation
+function smoothScrollTo(targetId) {
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+        targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+}
+
+// Certificate Modal Functions
+function openCertificateModal() {
+    const modal = document.getElementById('certificateModal');
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+
+    // Add smooth animation
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+}
+
+function closeCertificateModal() {
+    const modal = document.getElementById('certificateModal');
+    modal.classList.remove('show');
+
+    // Wait for animation to complete before hiding
+    setTimeout(() => {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Restore scrolling
+        resetCertificateModal();
+    }, 300);
+}
+
+function resetCertificateModal() {
+    // Reset form
+    document.getElementById('certificateCheckForm').reset();
+
+    // Hide result section
+    document.getElementById('certificateResult').style.display = 'none';
+
+    // Show form section
+    document.getElementById('certificateCheckForm').style.display = 'block';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('certificateModal');
+    if (event.target === modal) {
+        closeCertificateModal();
+    }
+}
+
+// Prevent default anchor behavior for navigation links
+document.addEventListener('DOMContentLoaded', function() {
+    const navLinks = document.querySelectorAll('.navbar a[href^="#"]');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+        });
+    });
+});
+
+// Certificate form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const certificateForm = document.getElementById('certificateCheckForm');
+
+    if (certificateForm) {
+        certificateForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const clientName = document.getElementById('clientName').value.trim();
+            const certificateNumber = document.getElementById('certificateNumber').value.trim();
+
+            if (!clientName || !certificateNumber) {
+                alert('Please fill in both fields');
+                return;
+            }
+
+            // Show loading state
+            const submitBtn = certificateForm.querySelector('.btn-submit');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Searching...';
+            submitBtn.disabled = true;
+
+            // Get CSRF token
+            const csrfToken = document.querySelector('#certificateCheckForm [name=csrfmiddlewaretoken]').value;
+
+            // Make AJAX request to check certificate
+            fetch('/check-certificate/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({
+                    client_name: clientName,
+                    certificate_number: certificateNumber
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    displayCertificateDetails(data.certificate);
+                } else {
+                    showErrorMessage(data.error || 'Certificate not found');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showErrorMessage('An error occurred while checking the certificate. Please try again.');
+            })
+            .finally(() => {
+                // Restore button state
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            });
+        });
+    }
+});
+
+function displayCertificateDetails(certificate) {
+    // Hide form
+    document.getElementById('certificateCheckForm').style.display = 'none';
+
+    // Show result section
+    const resultSection = document.getElementById('certificateResult');
+    const detailsContainer = document.getElementById('certificateDetails');
+
+    // Format certificate details
+    const statusClass = certificate.is_active ? 'status-active' : 'status-expired';
+    const statusText = certificate.is_active ? 'Active' : 'Expired';
+
+    detailsContainer.innerHTML = `
+        <div class="detail-row">
+            <span class="detail-label">Client Name:</span>
+            <span class="detail-value">${certificate.client_name}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Certificate Number:</span>
+            <span class="detail-value">${certificate.certificate_number}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Standard:</span>
+            <span class="detail-value">${certificate.standard}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Issue Date:</span>
+            <span class="detail-value">${certificate.issue_date}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Expiry Date:</span>
+            <span class="detail-value">${certificate.expiry_date}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value ${statusClass}">${statusText}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Country:</span>
+            <span class="detail-value">${certificate.country}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Accreditation Body:</span>
+            <span class="detail-value">${certificate.accreditation_body}</span>
+        </div>
+        ${certificate.scope ? `
+        <div class="detail-row">
+            <span class="detail-label">Scope:</span>
+            <span class="detail-value">${certificate.scope}</span>
+        </div>
+        ` : ''}
+        <div class="detail-row">
+            <span class="detail-label">Address:</span>
+            <span class="detail-value">${certificate.address}</span>
+        </div>
+    `;
+
+    resultSection.style.display = 'block';
+}
+
+function showErrorMessage(message) {
+    // Create error message element
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'certificate-error';
+    errorDiv.style.cssText = `
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+        font-size: 0.9rem;
+        text-align: center;
+    `;
+    errorDiv.textContent = message;
+
+    // Insert error message after form
+    const form = document.getElementById('certificateCheckForm');
+    form.parentNode.insertBefore(errorDiv, form.nextSibling);
+
+    // Remove error message after 5 seconds
+    setTimeout(() => {
+        if (errorDiv.parentNode) {
+            errorDiv.parentNode.removeChild(errorDiv);
+        }
+    }, 5000);
+}
+</script>
+
+</body>
+</html>
