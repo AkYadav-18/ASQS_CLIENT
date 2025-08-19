@@ -148,7 +148,6 @@ h2{
     .hero img {
         width: 100%;
         max-width: 350px;
-        margin-left: 140px;
     }
 }
 
@@ -608,7 +607,6 @@ h2{
 
     .about-image-main {
         max-width: 300px;
-        margin-left: 40px;
     }
 
     .about-ASQS-text {
@@ -2185,7 +2183,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     certificate_number: certificateNumber
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                // Check if response is ok
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('Server returned non-JSON response');
+                }
+
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     displayCertificateDetails(data.certificate);
@@ -2195,7 +2206,24 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error:', error);
-                showErrorMessage('An error occurred while checking the certificate. Please try again.');
+                if (error.message.includes('HTTP error! status:')) {
+                    const status = error.message.match(/status: (\d+)/)?.[1];
+                    if (status === '403') {
+                        showErrorMessage('Access denied. Please refresh the page and try again.');
+                    } else if (status === '404') {
+                        showErrorMessage('Certificate check service not found.');
+                    } else if (status === '500') {
+                        showErrorMessage('Server error. Please try again later.');
+                    } else {
+                        showErrorMessage(`Server error (${status}). Please try again.`);
+                    }
+                } else if (error.message.includes('non-JSON response')) {
+                    showErrorMessage('Server returned an unexpected response. Please try again.');
+                } else if (error.name === 'SyntaxError' && error.message.includes('JSON')) {
+                    showErrorMessage('Invalid response from server. Please try again.');
+                } else {
+                    showErrorMessage('An error occurred while checking the certificate. Please try again.');
+                }
             })
             .finally(() => {
                 // Restore button state
@@ -2297,4 +2325,3 @@ function showErrorMessage(message) {
 
 </body>
 </html>
-
