@@ -11,6 +11,7 @@ from .models import Enquiry
 from Clients.models import Client
 import json
 from datetime import date
+from django.views.decorators.csrf import csrf_exempt
 
 
 @csrf_protect
@@ -121,7 +122,7 @@ def submit_enquiry_ajax(request):
 
 
 @require_http_methods(["POST"])
-@csrf_protect
+@csrf_exempt
 def check_certificate(request):
     """AJAX endpoint for certificate verification"""
     try:
@@ -318,4 +319,5 @@ def services_page(request):
 def about_us_page(request):
     """About Us page view"""
     return render(request, 'HomePage/about_us.html')
+
 
