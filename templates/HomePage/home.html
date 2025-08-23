@@ -1018,9 +1018,25 @@ h2{
 }
 
 .modal-body {
+    position: relative;
     padding: 30px 25px;
     max-height: 70vh;
     overflow-y: auto;
+}
+
+.modal-body::before {
+    content: "\f5a2"; /* Unicode for fa-certificate */
+    font-family: "Font Awesome 5 Free"; /* or "Font Awesome 6 Free" depending on version */
+    font-weight: 900; /* solid style */
+    font-size: 12rem; /* size of the icon */
+    color: rgba(0, 0, 0, 0.05); /* light faded grey */
+    
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none; /* don’t block form clicks */
+    z-index: 0; /* behind content */
 }
 
 .form-group {
@@ -1540,8 +1556,14 @@ h2{
             </h2>
 
         <p>
-            American Skyline Quality Standardsis a globally recognized ISO Certification body and has a specialized wide pool of auditors and technical experts in each field to conduct audits at clients across various industries like construction, manufacturing, software, food and service sector companies. American Skyline Quality Standardsis accredited by United Accreditation Foundation (UAF) USA, a member of IAF.
+            American Skyline Quality Standards is a globally recognized ISO certification body, committed to helping organizations achieve operational excellence through internationally recognized standards.
+            With a specialized pool of experienced auditors and technical experts, we conduct comprehensive audits across industries - including construction, manufacturing, software, food, and all service sectors.
+            <br>
+            • Empowering Excellence through Global ISO Certification Standards <br>
+            • Your Trusted Partner in ISO Certification across Industries <br>
+            • Accredited Expertise, Reliable Certification, Worldwide Impact.
         </p>
+
         <a class="read-more-btn" href="#">READ MORE</a>
     </div>
     <img class="certificate-image" src="{% static 'images/certificate.jpeg' %}" alt="Sample ISO Certificate">
@@ -1779,7 +1801,7 @@ h2{
                 </div>
                 <div class="across-globe-flag-col">
                     <img class="across-globe-flag-img" src="https://flagcdn.com/id.svg" alt="Canada">
-                    <span class="across-globe-flag-label">Canada</span>
+                    <span class="across-globe-flag-label">Indonesia</span>
                 </div>
             </div>
         </div>
