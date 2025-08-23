@@ -1330,7 +1330,7 @@ h2{
 .whatsapp-float {
   position: fixed;
   bottom: 20px;
-  left: 20px;
+  right: 20px;   /* changed from left:20px to right:20px */
   background-color: #25D366;
   color: white;
   border-radius: 50px;
@@ -1344,8 +1344,9 @@ h2{
   box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
   transition: all 0.3s ease;
   z-index: 1000;
-  width: 20px;         /* initially just circle */
+  width: 20px;         
   overflow: hidden;
+  justify-content: center;
 }
 
 .whatsapp-float i {
@@ -1358,14 +1359,17 @@ h2{
   transition: opacity 0.3s ease;
 }
 
-/* On Hover: Expand and show text */
+/* On Hover: Expand leftwards */
 .whatsapp-float:hover {
-  width: 120px;   /* expand width */
+  width: 120px;
+  justify-content: flex-start; /* align icon + text nicely */
+  padding-left: 12px;
 }
 
 .whatsapp-float:hover span {
   opacity: 1;
 }
+
 
 
 
