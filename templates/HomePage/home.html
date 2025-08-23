@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>American Skyline Quality Standards</title>
 <link rel="icon" type="image/jpeg" href="{% static 'images/ASQS_NEW.jpg' %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
 body {
@@ -249,6 +249,48 @@ h2{
 .read-more-btn:hover {
     background-color: #2563eb;
 }
+
+.whatsapp-float {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background-color: #25D366;
+  color: white;
+  border-radius: 50px;
+  padding: 12px 16px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  width: 30px;         /* initially just circle */
+  overflow: hidden;
+}
+
+.whatsapp-float i {
+  font-size: 24px;
+}
+
+.whatsapp-float span {
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* On Hover: Expand and show text */
+.whatsapp-float:hover {
+  width: 120px;   /* expand width */
+}
+
+.whatsapp-float:hover span {
+  opacity: 1;
+}
+
+
 
 /* Content Text Responsive */
 @media (max-width: 768px) {
@@ -959,7 +1001,7 @@ h2{
     border-radius: 12px;
     width: 90%;
     max-width: 650px;
-    max-height: 85vh;
+    /* max-height: 105vh; */
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     animation: modalSlideIn 0.3s ease-out;
     overflow: hidden;
@@ -1020,16 +1062,16 @@ h2{
 .modal-body {
     position: relative;
     padding: 30px 25px;
-    max-height: 70vh;
+    max-height: 100vh;
     overflow-y: auto;
 }
 
 .modal-body::before {
-    content: "\f559"; /* Unicode for fa-certificate */
-    font-family: "Font Awesome 5 Free"; /* or "Font Awesome 6 Free" depending on version */
+    content: "\f559"; 
+    font-family: "Font Awesome 5 Free"; 
     font-weight: 900; /* solid style */
-    font-size: 18rem; /* size of the icon */
-    color: rgba(0, 0, 0, 0.05); /* light faded grey */
+    font-size: 18rem; 
+    color: rgba(0, 0, 0, 0.05); 
     
     position: absolute;
     top: 50%;
@@ -1293,18 +1335,20 @@ h2{
     display: flex;
     gap: 15px;
     order: 1;
+    font-size: 14px;
+    margin-left: 100px;
 }
 .footer-social a {
     color: #fff;
     background: #d32f2f;
     border-radius: 50%;
-    width: 42px;
-    height: 42px;
+    width: 36px;
+    height: 36px;
     display: flex;
     justify-content: center;
     align-items: center;
     transition: all 0.3s ease;
-    font-size: 1.2rem;
+    font-size: 1rem;
     text-decoration: none;
 }
 .footer-social a:hover {
@@ -1327,51 +1371,6 @@ h2{
     order: 3;
 }
 
-
-.whatsapp-float {
-    position: fixed;
-    bottom: 20px;
-    right: 20px; /* Always stay visible inside the screen */
-    width: 50px;
-    height: 50px;
-    background-color: #25d366;
-    color: #fff;
-    border-radius: 50%;
-    text-align: center;
-    font-size: 20px;
-    box-shadow: 2px 2px 3px #999;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease-in-out;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-.whatsapp-float i {
-  font-size: 20px;
-  color: white;
-  flex-shrink: 0;        
-  margin-right: -115px;
-}
-
-.whatsapp-float span {
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-/* Hover: expand to show text */
-.whatsapp-float:hover {
-  width: 160px;           /* expand smoothly */
-  justify-content: flex-start;
-  padding-left: 16px;
-}
-
-.whatsapp-float:hover span {
-  opacity: 1;
-}
 
 
 /* Footer Bottom Responsive */
@@ -1412,17 +1411,6 @@ h2{
     .footer-copy {
         font-size: 0.85rem;
     }
-    .whatsapp-float {
-    width: 45px;  /* keep small */
-  }
-  .whatsapp-float:hover {
-    width: 45px;  /* no expand on mobile */
-    padding-left: 0;
-    justify-content: center;
-  }
-  .whatsapp-float span {
-    display: none; /* hide text on small screens */
-  }
    
 }
 
@@ -1613,11 +1601,9 @@ h2{
 
         <p>
             American Skyline Quality Standards is a globally recognized ISO certification body, committed to helping organizations achieve operational excellence through internationally recognized standards.
-            With a specialized pool of experienced auditors and technical experts, we conduct comprehensive audits
-            <br> across industries - including construction, manufacturing, software, food, and all service sectors.
+            With a specialized pool of experienced auditors and technical experts, we conduct comprehensive audits across industries - including construction, manufacturing, software, food, and all service sectors.
             <br>
-            <br>
-            • Empowering Excellence through Global ISO Certification Standards<br>
+            • Empowering Excellence through Global ISO Certification Standards <br>
             • Your Trusted Partner in ISO Certification across Industries <br>
             • Accredited Expertise, Reliable Certification, Worldwide Impact.
         </p>
@@ -1765,17 +1751,17 @@ h2{
 </div>
 
 <!-- WhatsApp Floating Button -->
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-
-<a href="https://wa.me/919689589580?text=Hello%20I%20want%20to%20know%20more%20about%20your%20Certification" 
+<a href="https://wa.me/919689589580?text=Hello%20I%20want%20to%20know%20more%20about%20your%20Certification&typ" 
    class="whatsapp-float" 
    target="_blank">
    <i class="fab fa-whatsapp"></i>
    <span>Get In touch</span>
 </a>
 
-<!-- Latest FontAwesome -->
+<!-- FontAwesome for WhatsApp Icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
 
 
 <!-- Across The Globe Section -->
@@ -1969,6 +1955,7 @@ h2{
 
             <!-- Certificate Details Display -->
             <div id="certificateResult" class="certificate-result" style="display: none;">
+                
                 <div class="result-header">
                     <h3>Certificate Details</h3>
                 </div>
@@ -2073,6 +2060,11 @@ h2{
 
 <div class="footer-bottom">
     <div class="footer-bottom-bar">
+        <div class="footer-copy">
+            &copy;All Right Copy Right Reserved. 2023
+        </div>
+        <img class="footer-bottom-logo" src="{% static 'images/ASQS_NEW.jpg' %}" alt="Footer Logo">
+        
         <div class="footer-social">
             <a href="https://www.instagram.com/brandcertificationltd?igsh=MW95dHF3eXM2YTB4eA==" target="_blank" aria-label="Instagram">
                 <i class="fab fa-instagram"></i>
@@ -2084,10 +2076,6 @@ h2{
                 <i class="fab fa-facebook-f"></i>
             </a>
 
-        </div>
-        <img class="footer-bottom-logo" src="{% static 'images/ASQS_NEW.jpg' %}" alt="Footer Logo">
-        <div class="footer-copy">
-            &copy;All Right Copy Right Reserved. 2023
         </div>
     </div>
  
@@ -2426,4 +2414,3 @@ function showErrorMessage(message) {
 
 </body>
 </html>
-
